@@ -1,0 +1,659 @@
+[
+ {
+  "code": "GRMZK-1",
+  "name": "GRMZK-1",
+  "status": "reference",
+  "place": "Riga, Latvia",
+  "where": "Exact location not disclosed",
+  "lat": 56.95,
+  "lng": 24.105,
+  "author": "",
+  "size": "5 m · about 3 t",
+  "description": "Discovered in July 2025 on the left bank of the Daugava. Five metres, about three tonnes, hull intact. Origin and classification remain unknown. Under observation by the research group.",
+  "sources": [
+   "https://deviniska.com/grmzk-1"
+  ],
+  "onMap": true,
+  "photos": [
+   {
+    "url": "data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22800%22%20height%3D%22600%22%20viewBox%3D%220%200%20800%20600%22%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22%234A4A43%22/%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20fill%3D%22%23ffffff%22%20font-family%3D%22Roboto%2CArial%2Csans-serif%22%20font-size%3D%2250%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3EGRMZK-1a%20%C2%B7%20sample%20photo%3C/text%3E%3C/svg%3E",
+    "credit": "sample credit, Name Surname"
+   },
+   {
+    "url": "data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22800%22%20height%3D%22600%22%20viewBox%3D%220%200%20800%20600%22%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22%236E6E66%22/%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20fill%3D%22%23ffffff%22%20font-family%3D%22Roboto%2CArial%2Csans-serif%22%20font-size%3D%2250%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3EGRMZK-1b%20%C2%B7%20sample%20photo%3C/text%3E%3C/svg%3E",
+    "credit": "sample credit, Name Surname"
+   }
+  ],
+  "preview": "data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22120%22%20height%3D%22120%22%20viewBox%3D%220%200%20120%20120%22%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22%23651C2A%22/%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20fill%3D%22%23ffffff%22%20font-family%3D%22Roboto%2CArial%2Csans-serif%22%20font-size%3D%2210%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3EGRMZK-1%3C/text%3E%3C/svg%3E"
+ },
+ {
+  "code": "GRMZK-2",
+  "name": "Local Nomad",
+  "status": "awakened",
+  "place": "Jyväskylä, Finland",
+  "where": "In front of the Jyväskylä Art Museum, Kauppakatu 23",
+  "lat": 62.2422,
+  "lng": 25.7462,
+  "author": "Jukka Silokunnas, Jonna Surhasko",
+  "size": "",
+  "description": "A rag-boiling sphere from the rag house of the old Kangas paper mill. Every year it gets a new colour (purple in 2026) and stands in front of the art museum from summer until the first snow. According to the museum, the sphere travels the world and always comes back.",
+  "sources": [
+   "https://www.ksml.fi/paikalliset/9438023",
+   "https://kalenteri.jyvaskyla.fi/tapahtuma/7a730013-65f0-47cc-a86f-59d1b5d73a47"
+  ],
+  "onMap": true,
+  "photos": [],
+  "preview": null
+ },
+ {
+  "code": "GRMZK-3",
+  "name": "Silo 468",
+  "status": "awakened",
+  "place": "Helsinki, Finland",
+  "where": "Kruunuvuorenranta",
+  "lat": 60.167,
+  "lng": 25.0115,
+  "author": "Lighting Design Collective",
+  "size": "35 m wide · 16 m high",
+  "description": "A 1960s oil silo for 16,000 m³. Since 2012 it has been a light installation and a public space: 1,280 LEDs shine through holes cut in its wall, in patterns driven by the wind. The inner walls are dark red.",
+  "sources": [
+   "https://awards.mediaarchitecture.org/mab/project/123",
+   "https://blaf.fi/?p=1900"
+  ],
+  "onMap": true,
+  "photos": [],
+  "preview": null
+ },
+ {
+  "code": "GRMZK-4",
+  "name": "Fröndenberg Funnel",
+  "status": "awakened",
+  "place": "Fröndenberg, Germany",
+  "where": "",
+  "lat": 51.471,
+  "lng": 7.764,
+  "author": "Markus Lüpertz",
+  "size": "15 m high and wide",
+  "description": "A fibre-catching funnel that cleaned the water of the Himmelmann paper mill and returned the fibre to production from 1959 to 1982. Townspeople and the painter Markus Lüpertz saved it, and in 1998 he painted it. Now an industrial monument.",
+  "sources": [
+   "https://westfalen.museum-digital.de/object/28745"
+  ],
+  "onMap": true,
+  "photos": [],
+  "preview": null
+ },
+ {
+  "code": "GRMZK-5",
+  "name": "Ladle of Steel",
+  "status": "awakened",
+  "place": "Middlesbrough, UK",
+  "where": "Roundabout on the A66",
+  "lat": 54.5791,
+  "lng": -1.1831,
+  "author": "Steve Tomlinson",
+  "size": "about 5 t",
+  "description": "A real ladle from a local foundry. Since 2005 it has hung above a roundabout, pouring steel into a mould.",
+  "sources": [
+   "https://fabulousnorth.com/ladle-of-steel/"
+  ],
+  "onMap": true,
+  "photos": [],
+  "preview": null
+ },
+ {
+  "code": "GRMZK-6",
+  "name": "Waypoint (the Acid Ball)",
+  "status": "awakened",
+  "place": "Bellingham, Washington, USA",
+  "where": "Waypoint Park",
+  "lat": 48.7499,
+  "lng": -122.4836,
+  "author": "Mutuus Studio",
+  "size": "about 9 m wide · about 180 t",
+  "description": "A 1938 sphere from the pressure-relief system of the Georgia-Pacific pulp mill, where wood chips were cooked in sulphurous acid. Since 2018 it has been covered in reflective glass beads and lit with LEDs. At night you can light it up with your own torch.",
+  "sources": [
+   "https://portofbellingham.com/CivicAlerts.aspx?AID=260",
+   "https://cob.org/services/recreation/parks-trails/parks-guide/waypoint-park"
+  ],
+  "onMap": true,
+  "photos": [],
+  "preview": null
+ },
+ {
+  "code": "GRMZK-7",
+  "name": "Eco Earth",
+  "status": "awakened",
+  "place": "Salem, Oregon, USA",
+  "where": "Riverfront Park",
+  "lat": 44.943,
+  "lng": -123.044,
+  "author": "Idea of former mayor Roger Gertenrich",
+  "size": "about 8 m wide",
+  "description": "An acid tank from a paper mill. In 2003 it was covered in tiles and turned into a globe. The tiles are slowly falling off.",
+  "sources": [
+   "https://www.roadsideamerica.com/tip/37589",
+   "https://digital-release.koin.com/?p=14107"
+  ],
+  "onMap": true,
+  "photos": [],
+  "preview": null
+ },
+ {
+  "code": "GRMZK-8",
+  "name": "The Savannah Globe",
+  "status": "awakened",
+  "place": "Savannah, Georgia, USA",
+  "where": "Corner of White Bluff Rd and DeRenne Ave",
+  "lat": 32.011,
+  "lng": -81.117,
+  "author": "James Ellison, Leo Berkemeier (first painting)",
+  "size": "about 18 m wide",
+  "description": "A Horton sphere built in 1956–57 for the Savannah Gas Company to hold 600,000 cubic feet of gas. It stopped holding gas in the 1970s. From the start it was painted as the Earth with a single word: SAVANNAH. The new owners of the site are keeping it as a landmark open to everyone.",
+  "sources": [
+   "https://issuu.com/savannahmagazine/docs/savannahmag_22mj_2022/s/16140113"
+  ],
+  "onMap": true,
+  "photos": [],
+  "preview": null
+ },
+ {
+  "code": "GRMZK-9",
+  "name": "The Tank with the Crank",
+  "status": "awakened",
+  "place": "Haines, Alaska, USA",
+  "where": "Fort Seward sculpture garden",
+  "lat": 59.2335,
+  "lng": -135.4425,
+  "author": "Dave Pahl",
+  "size": "",
+  "description": "A rusty water tank from the fort's barracks, turned into a kinetic sculpture. Gears from an old cement mixer sit inside and a crank sticks out. Turn it, and a whale and a fisherman in a boat circle above the tank.",
+  "sources": [
+   "https://khns.org/?p=10454"
+  ],
+  "onMap": true,
+  "photos": [],
+  "preview": null
+ },
+ {
+  "code": "GRMZK-10",
+  "name": "Rusty the Mastodon",
+  "status": "awakened",
+  "place": "Milwaukee, Wisconsin, USA",
+  "where": "Opposite the Pritzlaff Building, 150 W. St. Paul Ave.",
+  "lat": 43.0335,
+  "lng": -87.9105,
+  "author": "Kendall Breunig",
+  "size": "about 10 t",
+  "description": "An old steel boiler from the Nunn-Bush shoe factory, made into Rusty the mastodon.",
+  "sources": [
+   "https://urbanmilwaukee.com/2023/07/26/say-hello-to-rusty-the-mastodon/"
+  ],
+  "onMap": true,
+  "photos": [],
+  "preview": null
+ },
+ {
+  "code": "GRMZK-11",
+  "name": "The Way",
+  "status": "reborn",
+  "place": "St. Louis, Missouri, USA",
+  "where": "Laumeier Sculpture Park",
+  "lat": 38.548,
+  "lng": -90.417,
+  "author": "Alexander Liberman",
+  "size": "",
+  "description": "Decommissioned steel tanks, already 40–50 years old when the sculptor got them in 1980, cut and assembled into a monumental sculpture. Recently restored, the tanks are now about a hundred years old.",
+  "sources": [
+   "https://nl.carboline.com/solution-spot/posts/the-way-sculpture-restoration/"
+  ],
+  "onMap": true,
+  "photos": [],
+  "preview": null
+ },
+ {
+  "code": "GRMZK-12",
+  "name": "Nikotan's Gas Sphere",
+  "status": "awakened",
+  "place": "Shibata, Niigata, Japan",
+  "where": "Shibata Gas site",
+  "lat": 37.948,
+  "lng": 139.327,
+  "author": "Shibata Gas",
+  "size": "",
+  "description": "A gas sphere still in service. Many Japanese gas companies paint their spheres; on this one the character Nikotan smiles at the town. Its face outweighs its working life.",
+  "sources": [
+   "https://weburbanist.com/?p=28128",
+   "https://www.amusingplanet.com/2012/07/decorated-gas-tanks-of-japan.html"
+  ],
+  "onMap": true,
+  "photos": [],
+  "preview": null
+ },
+ {
+  "code": "GRMZK-13",
+  "name": "Immerge",
+  "status": "reborn",
+  "place": "Sydney, Australia",
+  "where": "Harold Park",
+  "lat": -33.877,
+  "lng": 151.1795,
+  "author": "Chris Fox",
+  "size": "",
+  "description": "A public installation made from the parts of the water tank of the former Rozelle tram depot. Opened in April 2022.",
+  "sources": [
+   "https://www.sydney.edu.au/news-opinion/news/2022/04/08/reimagining-history.html",
+   "https://www.miragenews.com/reimagining-history-761276/"
+  ],
+  "onMap": true,
+  "photos": [],
+  "preview": null
+ },
+ {
+  "code": "GRMZK-14",
+  "name": "Martin Luther",
+  "status": "awakened",
+  "place": "Swakopmund, Namibia",
+  "where": "Small museum at the town entrance",
+  "lat": -22.6719,
+  "lng": 14.5528,
+  "author": "",
+  "size": "14 t",
+  "description": "A McLaren steam traction engine built in Leeds in 1895. Brought in 1896 to haul cargo across the Namib desert, it got stuck in the sand for good, hence its name: “Here I stand”. Restored from rusty scrap in 1973, it now stands under the glass shell of a small museum.",
+  "sources": [
+   "https://en.wikipedia.org/wiki/Martin_Luther_(steam_locomotive)",
+   "https://namibian.org/blog/steam-ox",
+   "https://www.namibweb.com/martinl.htm"
+  ],
+  "onMap": true,
+  "photos": [],
+  "preview": null
+ },
+ {
+  "code": "GRMZK-15",
+  "name": "Home. Memories",
+  "status": "awakened",
+  "place": "Galindez Island, Antarctica",
+  "where": "Akademik Vernadsky station",
+  "lat": -65.2455,
+  "lng": -64.2575,
+  "author": "balbek bureau, Wonder Workshop",
+  "size": "",
+  "description": "The station's old fuel tank, no longer in use. Since February 2023 a thin metal frame of a Ukrainian house, like a pencil drawing, stands around it. About 4,000 visitors a year see it first.",
+  "sources": [
+   "https://www.dezeen.com/2023/03/14/ukrainian-home-memories-antarctic-balbek-bureau/",
+   "https://www.balbek.com/home-memories"
+  ],
+  "onMap": true,
+  "photos": [],
+  "preview": null
+ },
+ {
+  "code": "GRMZK-16",
+  "name": "Nomad's Twin",
+  "status": "sleeping",
+  "place": "Jyväskylä, Finland",
+  "where": "Former Kangas paper mill",
+  "lat": 62.2515,
+  "lng": 25.759,
+  "author": "",
+  "size": "",
+  "description": "The second sphere from the same Kangas rag house, kept on the former mill site as a monument. Exact spot and condition not yet checked.",
+  "sources": [
+   "https://yle.fi/a/3-5634893"
+  ],
+  "onMap": true,
+  "photos": [],
+  "preview": null
+ },
+ {
+  "code": "GRMZK-17",
+  "name": "Kugelkocher",
+  "status": "sleeping",
+  "place": "Zwönitz, Saxony, Germany",
+  "where": "Niederzwönitz paper mill, technical museum",
+  "lat": 50.64,
+  "lng": 12.795,
+  "author": "",
+  "size": "2.3 m wide · 2.8 t · riveted steel",
+  "description": "A rag-boiling sphere, later used to soak waste paper for cardboard. Made in 1913 by Ernst Zorn in Regensburg. In 1926 a wall was taken down to bring it into the mill, where it still stands.",
+  "sources": [
+   "https://sachsen.museum-digital.de/object/53719"
+  ],
+  "onMap": true,
+  "photos": [],
+  "preview": null
+ },
+ {
+  "code": "GRMZK-18",
+  "name": "The Canton Acid Ball",
+  "status": "sleeping",
+  "place": "Canton, North Carolina, USA",
+  "where": "Site of the demolished paper mill",
+  "lat": 35.5335,
+  "lng": -82.842,
+  "author": "",
+  "size": "about 9 m high · about 40 t",
+  "description": "A riveted 1936 sphere that held alum under pressure, possibly made at the mill itself. Found during the demolition of the paper mill in October 2026. Its fate is undecided; one idea is to place it by the future riverfront.",
+  "sources": [
+   "https://wlos.com/news/local/unique-artifact-revealed-demolition-canton-paper-mill-giant-sphere-steel-acid-ball-40-tons-riveted-history-chemical-north-carolina"
+  ],
+  "onMap": true,
+  "photos": [],
+  "preview": null
+ },
+ {
+  "code": "GRMZK-19",
+  "name": "Gas Works Park",
+  "status": "sleeping",
+  "place": "Seattle, Washington, USA",
+  "where": "2101 N Northlake Way",
+  "lat": 47.6456,
+  "lng": -122.3343,
+  "author": "Richard Haag (park)",
+  "size": "",
+  "description": "A coal gasification plant that worked from 1906 to 1956. Richard Haag's park, opened in 1975, left its towers standing as they were; locals call them Seattle's iron Stonehenge. The last remains of a coal gas plant in the US, on the National Register since 2013.",
+  "sources": [
+   "https://www.atlasobscura.com/places/gas-works-park",
+   "https://interactive.wttw.com/ten/parks/gas-works-park"
+  ],
+  "onMap": true,
+  "photos": [],
+  "preview": null
+ },
+ {
+  "code": "GRMZK-20",
+  "name": "Worried Buoy",
+  "status": "awakened",
+  "place": "Port Townsend, Washington, USA",
+  "where": "2501 Washington St",
+  "lat": 48.117,
+  "lng": -122.7604,
+  "author": "Unknown",
+  "size": "",
+  "description": "An old buoy painted as a pot-bellied little man with a worried face.",
+  "sources": [
+   "https://www.roadsideamerica.com/tip/37917"
+  ],
+  "onMap": true,
+  "photos": [],
+  "preview": null
+ },
+ {
+  "code": "GRMZK-21",
+  "name": "Robot Cisterns",
+  "status": "awakened",
+  "place": "Columbia, South Carolina, USA",
+  "where": "NOMA, 2428 Main St",
+  "lat": 34.017,
+  "lng": -81.037,
+  "author": "Clark Ellefson (Lewis + Clark), Chris Stuyck (Stuyck Company)",
+  "size": "",
+  "description": "Two decommissioned propane tanks turned into robots that work as rainwater cisterns. Installed on 9 April 2018.",
+  "sources": [
+   "https://www.onecolumbiasc.com/public-art/directory/robot-cisterns/"
+  ],
+  "onMap": true,
+  "photos": [],
+  "preview": null
+ },
+ {
+  "code": "GRMZK-22",
+  "name": "Big Rig Jig",
+  "status": "reborn",
+  "place": "Las Vegas, Nevada, USA",
+  "where": "Fergusons Downtown, Fremont St",
+  "lat": 36.165,
+  "lng": -115.133,
+  "author": "Mike Ross",
+  "size": "",
+  "description": "Two tanker trucks, bent and stacked into a curving tower.",
+  "sources": [
+   "https://www.roadsideamerica.com/tip/54381",
+   "https://atlasobscura.com/places/big-rig-jig"
+  ],
+  "onMap": true,
+  "photos": [],
+  "preview": null
+ },
+ {
+  "code": "GRMZK-23",
+  "name": "Future Returns",
+  "status": "reborn",
+  "place": "Scunthorpe, UK",
+  "where": "Shown at 20-21 Arts Centre; current location unknown",
+  "lat": 53.588,
+  "lng": -0.654,
+  "author": "Dan Rawlings",
+  "size": "10.5 m",
+  "description": "An oil tanker that stood idle for 12 years. The artist plasma-cut its walls into a forest.",
+  "sources": [
+   "https://www.thisiscolossal.com/2021/06/dan-rawlings-oil-tanker/",
+   "https://thred.com/?p=8708"
+  ],
+  "onMap": true,
+  "photos": [],
+  "preview": null
+ },
+ {
+  "name": "Moby Train",
+  "status": "awakened",
+  "place": "Brussels, Belgium",
+  "where": "Van Praet roundabout near Train World",
+  "lat": 50.881,
+  "lng": 4.38,
+  "author": "François Schuiten, Pierre Matter",
+  "size": "",
+  "description": "Locomotive 5204 “Gros Nez” from 1957, placed inside the sculpture of a whale. Planned for the roundabout by the railway museum; not installed before 2029.",
+  "sources": [
+   "https://bx1.be/?p=838981",
+   "https://newmobility.news/en/2023/03/13/brussels-traffic-circle-gets-eye-catching-moby-train-artwork/",
+   "https://www.vrt.be/vrtnws/nl/2023/03/12/oude-trein-wordt-kunstwerk-op-rotonde-nabij-train-world-in-bruss/"
+  ],
+  "onMap": false,
+  "code": "GRMZK-24",
+  "photos": [],
+  "preview": null
+ },
+ {
+  "code": "GRMZK-25",
+  "name": "Mushrooms and Bird Blind",
+  "status": "reborn",
+  "place": "Olympia, Washington, USA",
+  "where": "Grass Lake Nature Park",
+  "lat": 47.054,
+  "lng": -122.95,
+  "author": "Abe Singer",
+  "size": "",
+  "description": "The sculptor cut an old water tank the size of a boxcar into mushrooms and a blind for watching birds.",
+  "sources": [
+   "https://olyarts.org/abe-singers-grass-lake-park-sculptures/",
+   "https://olyarts.org/?p=68584"
+  ],
+  "onMap": true,
+  "photos": [],
+  "preview": null
+ },
+ {
+  "code": "GRMZK-26",
+  "name": "Boston Buoy Trail",
+  "status": "awakened",
+  "place": "Boston, Lincolnshire, UK",
+  "where": "Around the town",
+  "lat": 52.9789,
+  "lng": -0.0266,
+  "author": "Carrie Reichardt (mosaics)",
+  "size": "about 3 m",
+  "description": "Century-old sea buoys covered in mosaic and placed around the town by the Transported programme.",
+  "sources": [
+   "https://www.tileandstonejournal.com/laticrete/oh-buoy-carrie-reichardt-unveils-her-latest-art-collaboration-with-laticrete-in-lincolnshire/",
+   "https://bostonstandard.co.uk/news/people/art-project-helps-to-buoy-up-spirits-3301736"
+  ],
+  "onMap": true,
+  "photos": [],
+  "preview": null
+ },
+ {
+  "code": "GRMZK-27",
+  "name": "Frampton Marsh Buoys",
+  "status": "awakened",
+  "place": "Boston, Lincolnshire, UK",
+  "where": "RSPB Frampton Marsh",
+  "lat": 52.927,
+  "lng": 0.028,
+  "author": "Nathan Murdoch, Adam O'Brien",
+  "size": "",
+  "description": "Former sea buoys turned into an artwork in a bird reserve.",
+  "sources": [
+   "https://www.aol.com/articles/striking-artwork-transforms-former-marine-145150634.html"
+  ],
+  "onMap": true,
+  "photos": [],
+  "preview": null
+ },
+ {
+  "code": "GRMZK-28",
+  "name": "Lakes Entrance Buoys",
+  "status": "awakened",
+  "place": "Lakes Entrance, Victoria, Australia",
+  "where": "65 Bullock Island Rd",
+  "lat": -37.885,
+  "lng": 147.975,
+  "author": "Lukas Kasper",
+  "size": "about 5 t each",
+  "description": "Huge old buoys painted by the artist.",
+  "sources": [
+   "https://streetartcities.com/cities/lakes-entrance-vic-3909/markers/5e3b606d-b8dd-4311-a5c2-15f8f7f672db"
+  ],
+  "onMap": true,
+  "photos": [],
+  "preview": null
+ },
+ {
+  "code": "GRMZK-29",
+  "name": "Woolgoolga Buoys",
+  "status": "awakened",
+  "place": "Woolgoolga, New South Wales, Australia",
+  "where": "Corner of Wharf St and Beach St",
+  "lat": -30.11,
+  "lng": 153.2,
+  "author": "Sev Appleton",
+  "size": "",
+  "description": "Old buoys that have stood as a town sculpture since 2000.",
+  "sources": [
+   "https://coffs.recollect.net.au/nodes/view/37364"
+  ],
+  "onMap": true,
+  "photos": [],
+  "preview": null
+ },
+ {
+  "code": "GRMZK-30",
+  "name": "Buoy in a Field",
+  "status": "awakened",
+  "place": "New Deer, Aberdeenshire, UK",
+  "where": "Blackhillock, Millbrex",
+  "lat": 57.49,
+  "lng": -2.25,
+  "author": "Unknown",
+  "size": "",
+  "description": "A retired light buoy standing in the middle of a field, far from the sea.",
+  "sources": [
+   "https://www.abdn.ac.uk/elphinstone/resources/bbaf/category/7/201/"
+  ],
+  "onMap": true,
+  "photos": [],
+  "preview": null
+ },
+ {
+  "code": "GRMZK-31",
+  "name": "The Bathysphere",
+  "status": "sleeping",
+  "place": "New York, USA",
+  "where": "New York Aquarium, Coney Island, left of the main entrance",
+  "lat": 40.5743,
+  "lng": -73.975,
+  "author": "",
+  "size": "1.45 m · about 2.3 t",
+  "description": "A cast steel sphere with portholes that set records for deep-sea dives. It has stood at the aquarium entrance since 1957.",
+  "sources": [
+   "https://www.amny.com/lifestyle/go-inside-the-historic-record-setting-bathysphere-at-the-aquarium-at-coney-island-1-9042086",
+   "https://blog.wcs.org/photo/?p=4558"
+  ],
+  "onMap": true,
+  "photos": [],
+  "preview": null
+ },
+ {
+  "name": "Mantis Dreaming",
+  "status": "reborn",
+  "place": "Location unknown",
+  "where": "",
+  "lat": null,
+  "lng": null,
+  "author": "Bill Secunda",
+  "size": "6 m · 1.5 t",
+  "description": "A praying mantis made mostly from a scrapped railway tank car.",
+  "sources": [
+   "https://makezine.com/article/craft/scrap-tanker-car-becomes-giant-steel-mantis"
+  ],
+  "onMap": false,
+  "code": "GRMZK-32",
+  "photos": [],
+  "preview": null
+ },
+ {
+  "code": "GRMZK-33",
+  "name": "Stork's Nest",
+  "status": "awakened",
+  "place": "Tallinn, Estonia",
+  "where": "Noblessner quarter",
+  "lat": 59.4515,
+  "lng": 24.731,
+  "author": "Idea by Stina, age five; creative lead Kristel Linnutaja",
+  "size": "",
+  "description": "An old lighting mast of the port area now carries a light installation: a stork's nest with eggs. A five-year-old girl drew the idea.",
+  "sources": [
+   "https://www.err.ee/1609291065/noblessneri-kvartal-tallinnas-sai-endale-uue-maamargi"
+  ],
+  "onMap": true,
+  "photos": [],
+  "preview": null
+ },
+ {
+  "code": "GRMZK-34",
+  "name": "Tin Man",
+  "status": "awakened",
+  "place": "Dallas, Texas, USA",
+  "where": "Design District, on a rooftop",
+  "lat": 32.796,
+  "lng": -96.818,
+  "author": "",
+  "size": "",
+  "description": "A rooftop water tank styled as the Tin Man, with murals on the wall below.",
+  "sources": [
+   "https://www.dreamstime.com/tin-man-design-water-tower-top-building-district-dallas-texas-pictured-stands-over-several-murals-side-below-image188673162"
+  ],
+  "onMap": true,
+  "photos": [],
+  "preview": null
+ },
+ {
+  "code": "GRMZK-35",
+  "name": "Sky Chair",
+  "status": "reborn",
+  "place": "Sabile, Latvia",
+  "where": "Pedvāle Art Park",
+  "lat": 57.0337,
+  "lng": 22.5666,
+  "author": "Villu Jaanisoo",
+  "size": "",
+  "description": "A giant seat assembled from blue metal barrels, standing in a meadow of the art park. Its blue argues with the earth and grass and echoes the sky.",
+  "sources": [
+   "https://www.lsm.lv/raksts/kultura/maksla/01.12.2024-pastaiga-ar-trijam-kajam-par-pedvales-makslas-parku-un-annas-egles-izstadi-trejdevini.a578339/",
+   "https://www.pedvale.lv/en/art-park/"
+  ],
+  "onMap": true,
+  "photos": [],
+  "preview": null
+ }
+]
