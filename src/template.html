@@ -359,6 +359,13 @@ html.embed .cta{margin:14px 0 6px}
         pick = shuffle(g.items.slice()).slice(0, k);
       }
       var k = pick.length;
+      // the reference preview stands apart: due east, three and a half diameters away
+      if (g.ref) {
+        var rx = g.x + 3.5 * D, ry = g.y;
+        var rb = {x:rx, y:ry, fx:rx, fy:ry, tx:rx, ty:ry, r:R + 4, obj:pick[0], group:g, fixed:true};
+        nodes.push(rb);
+        return;
+      }
       var base = n === 1 ? awayAngle(g, groups) : Math.random() * 2 * Math.PI;
       var steps = shuffle(pick.map(function(_, i){ return i; }));
       pick.forEach(function(o, i){
@@ -378,6 +385,10 @@ html.embed .cta{margin:14px 0 6px}
       .force('y', d3.forceY(function(d){ return d.ty != null ? d.ty : d.y; }).strength(function(d){ return d.anchor ? 0 : 0.06; }))
       .stop();
     for (var i = 0; i < 260; i++) sim.tick();
+
+    // rays must not cross each other or run through another preview or mark
+    untangle(nodes.filter(function(n){ return !n.anchor; }), groups, R);
+    window.atlasLast = {groups: groups, bubbles: nodes.filter(function(n){ return !n.anchor; }), R: R};
 
     // 3. draw rays, anchors, bubbles
     nodes.forEach(function(b){
@@ -433,6 +444,56 @@ html.embed .cta{margin:14px 0 6px}
       el.addEventListener('mouseleave', function(){ b.line.removeAttribute('class'); label.hidden = true; });
       holder.appendChild(el);
     });
+  }
+
+  // Moves previews whose ray crosses another ray, runs through another preview or mark,
+  // or whose circle overlaps something. Each preview is turned around its own mark
+  // (and pushed a little further out if needed) to the nearest free position.
+  function untangle(bubbles, groups, R){
+    var GAP = 3;
+    function orient(a, b, c){ return (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x); }
+    function crosses(p1, p2, p3, p4){
+      var d1 = orient(p3, p4, p1), d2 = orient(p3, p4, p2), d3 = orient(p1, p2, p3), d4 = orient(p1, p2, p4);
+      return ((d1 > 0 && d2 < 0) || (d1 < 0 && d2 > 0)) && ((d3 > 0 && d4 < 0) || (d3 < 0 && d4 > 0));
+    }
+    function hitsCircle(a, b, c, r){
+      var dx = b.x - a.x, dy = b.y - a.y, l2 = dx * dx + dy * dy;
+      var t = l2 ? ((c.x - a.x) * dx + (c.y - a.y) * dy) / l2 : 0;
+      t = Math.max(0, Math.min(1, t));
+      return Math.hypot(c.x - (a.x + t * dx), c.y - (a.y + t * dy)) < r;
+    }
+    function conflict(b, x, y){
+      var A = b.group, P = {x:x, y:y};
+      for (var i = 0; i < bubbles.length; i++) {
+        var o = bubbles[i]; if (o === b) continue;
+        if (Math.hypot(o.x - x, o.y - y) < 2 * R + GAP) return true;
+        if (hitsCircle(A, P, o, R + 1)) return true;
+        if (hitsCircle(o.group, o, P, R + 1)) return true;
+        if (o.group !== A && crosses(A, P, o.group, o)) return true;
+      }
+      for (var j = 0; j < groups.length; j++) {
+        var g = groups[j], gr = g.node.r;
+        if (Math.hypot(g.x - x, g.y - y) < R + gr + GAP) return true;
+        if (g !== A && hitsCircle(A, P, g, gr)) return true;
+      }
+      return false;
+    }
+    for (var iter = 0; iter < 10; iter++) {
+      var moved = false;
+      bubbles.forEach(function(b){
+        if (b.fixed || !conflict(b, b.x, b.y)) return;
+        var g = b.group, a0 = Math.atan2(b.y - g.y, b.x - g.x), d0 = Math.hypot(b.x - g.x, b.y - g.y);
+        for (var s = 0; s <= 4; s++) {
+          var d = d0 + s * 14;
+          for (var k = 0; k <= 24; k++) {
+            var a = a0 + (k % 2 ? 1 : -1) * Math.ceil(k / 2) * Math.PI / 12;
+            var x = g.x + Math.cos(a) * d, y = g.y + Math.sin(a) * d;
+            if (!conflict(b, x, y)) { b.x = x; b.y = y; moved = true; return; }
+          }
+        }
+      });
+      if (!moved) break;
+    }
   }
 
   function shuffle(a){
