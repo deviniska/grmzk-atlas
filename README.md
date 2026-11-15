@@ -28,3 +28,10 @@ npm run mockup                                                       # data from
 Each object can have a drawn preview: a simplified line drawing on the object's dominant colour.
 `src/previews/gen.py` draws them (SVG, then PNG through `rsvg-convert`); the site uses the 256 px copies in `previews/`.
 The map picks a preview in this order: a file named exactly `GRMZK-N` in the Drive photo folder, then `previews/GRMZK-N.png`, then the first photo.
+
+## Languages
+
+The page speaks English, Latvian and Russian: `?lang=lv`, `?lang=ru` (no parameter = English).
+Interface texts live in the `I18N` dictionary in `src/template.html`.
+Object texts come from the Atlas tab: columns `Name (RU)`, `Place (RU)`, `Location (RU)`, `Author (RU)`, `Size (RU)`, `Description (RU)` and the same with `(LV)`; an empty cell falls back to English.
+On deviniska.com each language has its own page with the same embed code plus `&lang=..`; once those pages exist, set `PAGES_READY = true` so the round switch leads to them.
