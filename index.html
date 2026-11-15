@@ -747,46 +747,71 @@ h1{font:400 48px/1.3 Roboto,sans-serif;margin:0;letter-spacing:.005em}
 .overlay{position:fixed;inset:0;z-index:2000;background:rgba(29,30,32,.32);display:flex;align-items:center;justify-content:center;padding:24px}
 .overlay[hidden]{display:none}
 .sheet{position:relative;background:var(--page);width:100%;max-width:560px;max-height:calc(100vh - 48px);overflow:auto;box-shadow:0 12px 40px rgba(0,0,0,.12)}
-.close{all:unset;cursor:pointer;position:absolute;top:10px;right:12px;z-index:2;width:32px;height:32px;text-align:center;font:300 26px/32px Roboto,sans-serif;color:var(--ink);background:rgba(255,255,255,.85)}
+.close{all:unset;cursor:pointer;position:absolute;top:10px;right:12px;z-index:3;width:32px;height:32px;text-align:center;font:300 26px/32px Roboto,sans-serif;color:var(--ink);background:rgba(255,255,255,.85)}
 .close:focus-visible{outline:1px solid var(--ink)}
-.photo{margin:0;cursor:zoom-out;background:var(--sea);aspect-ratio:4/3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;overflow:hidden}
-.photo img{width:100%;height:100%;object-fit:cover;display:block}
-.photo .ph-code{font:300 52px/1 Roboto,sans-serif;color:#C9C9C3;letter-spacing:.02em}
+
+/* object card: always fits the screen, never scrolls.
+   Wide screens: photo on the left, text on the right.
+   Narrow or tall screens: photo on top, text below. The text shrinks until it fits. */
+.sheet.card{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);grid-template-rows:minmax(0,1fr);
+  width:min(1040px,calc(100vw - 48px));height:min(660px,calc(100vh - 48px));max-width:none;max-height:none;overflow:hidden}
+.card .gallery{position:relative;background:var(--sea);min-width:0;min-height:0}
+.card .photo{position:absolute;inset:0;margin:0;cursor:zoom-out;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;overflow:hidden}
+.card .photo img{width:100%;height:100%;object-fit:contain;display:block}
+.photo .ph-code{font:300 clamp(30px,8vmin,60px)/1 Roboto,sans-serif;color:#C9C9C3;letter-spacing:.02em}
 .photo .ph-code sub{font-size:.5em;vertical-align:-.3em;line-height:0;margin-left:2px}
-.gallery{position:relative}
-.nav{all:unset;cursor:pointer;position:absolute;top:50%;transform:translateY(-50%);width:36px;height:36px;text-align:center;font:300 28px/34px Roboto,sans-serif;color:var(--ink);background:rgba(255,255,255,.85)}
+.photo .ph-note{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--soft)}
+.nav{all:unset;cursor:pointer;position:absolute;top:50%;transform:translateY(-50%);z-index:2;width:36px;height:36px;text-align:center;font:300 28px/34px Roboto,sans-serif;color:var(--ink);background:rgba(255,255,255,.85)}
 .nav.prev{left:10px}
 .nav.next{right:10px}
 .nav[hidden]{display:none}
 .nav:focus-visible{outline:1px solid var(--ink)}
-.count{position:absolute;right:12px;bottom:10px;background:rgba(255,255,255,.85);font-size:12px;line-height:18px;padding:1px 8px;color:var(--muted)}
+.count{position:absolute;right:10px;bottom:10px;z-index:2;background:rgba(255,255,255,.85);font-size:12px;line-height:18px;padding:1px 8px;color:var(--muted)}
 .count[hidden]{display:none}
-.photo .ph-note{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--soft)}
-.credit{font-size:12px;color:var(--soft);padding:6px 28px 0}
-.body{padding:22px 28px 28px}
-.tag{display:flex;align-items:center;gap:10px;font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
-h2{font:400 30px/1.25 Roboto,sans-serif;margin:10px 0 4px}
-.place{color:var(--muted);font-size:15px}
-.desc{margin:18px 0 0}
-.facts{display:grid;grid-template-columns:auto 1fr;gap:4px 16px;margin:18px 0 0;font-size:14px;line-height:20px}
+.credit{position:absolute;left:10px;bottom:10px;z-index:2;max-width:calc(100% - 90px);background:rgba(255,255,255,.85);font-size:11px;line-height:16px;padding:2px 8px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.credit[hidden]{display:none}
+.card .body{--fs:16px;font-size:var(--fs);line-height:1.5;min-width:0;min-height:0;overflow:hidden;padding:30px 30px 24px 30px}
+.tag{display:flex;align-items:center;gap:.6em;font-size:.8em;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding-right:36px}
+.card h2{font:400 1.85em/1.2 Roboto,sans-serif;margin:.45em 0 .2em}
+.place{color:var(--muted);font-size:.92em}
+.desc{margin:1em 0 0}
+.facts{display:grid;grid-template-columns:auto 1fr;gap:.25em 1em;margin:1em 0 0;font-size:.87em;line-height:1.45}
 .facts dt{color:var(--soft)}
 .facts dd{margin:0}
-.links{margin-top:18px;font-size:14px;line-height:22px}
-.links a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line)}
+.links{margin-top:1em;font-size:.87em;line-height:1.55}
+.links a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line);overflow-wrap:anywhere}
 .links a:hover{border-color:var(--ink)}
+@media (max-width:720px), (max-aspect-ratio:5/6){
+  .overlay.for-card{padding:0}
+  .sheet.card{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto;width:100%;height:100%;box-shadow:none}
+  .card .gallery{min-height:28vh}
+  .card .body{max-height:64vh;padding:16px 18px 18px}
+}
 
-/* form */
-form{padding:28px}
-form h2{margin-top:0}
-form p.lead{margin:6px 0 18px;color:var(--muted);font-size:15px}
-label{display:block;font-size:14px;margin:14px 0 6px}
+/* report form: compact, so it fits the frame without scrolling where possible */
+h2{font:400 30px/1.25 Roboto,sans-serif;margin:10px 0 4px}
+form{padding:24px 28px}
+form h2{margin-top:0;font-size:26px}
+form p.lead{margin:4px 0 10px;color:var(--muted);font-size:14px;line-height:20px}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:0 16px}
+label{display:block;font-size:13px;line-height:18px;margin:10px 0 4px}
 label .opt{color:var(--soft)}
-input,textarea{width:100%;font:400 16px/22px Roboto,sans-serif;color:var(--ink);background:var(--page);border:1px solid var(--line);border-radius:0;padding:10px 12px}
+input,textarea{width:100%;font:400 15px/20px Roboto,sans-serif;color:var(--ink);background:var(--page);border:1px solid var(--line);border-radius:0;padding:8px 10px}
 input:focus,textarea:focus{outline:none;border-color:var(--ink)}
-textarea{min-height:96px;resize:vertical}
+textarea{min-height:62px;resize:vertical}
 .hp{position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden}
-form .btn{margin-top:22px}
-.msg{margin-top:16px;font-size:15px}
+form .btn{margin-top:16px}
+.msg{margin-top:12px;font-size:14px}
+@media (max-width:560px){ .fgrid{grid-template-columns:1fr} }
+@media (max-height:620px){
+  form{padding:14px 16px 16px}
+  form h2{font-size:22px}
+  form p.lead{display:none}
+  label{margin:6px 0 3px}
+  input,textarea{padding:6px 8px}
+  textarea{min-height:0;height:40px}
+  form .btn{margin-top:10px}
+}
 
 /* embedded on deviniska.com: no title or intro, the map fills the frame */
 html.embed .wrap{max-width:none;padding:0;display:flex;flex-direction:column;height:100vh}
@@ -803,8 +828,7 @@ html.embed .cta{margin:14px 0 6px}
   #map{height:66vh}
   .overlay{padding:0;align-items:stretch}
   .sheet{max-width:none;max-height:none;height:100%}
-  .body,form{padding:20px 20px 28px}
-  .credit{padding:6px 20px 0}
+  form{padding:18px 18px 22px}
 }
 </style>
 </head>
@@ -829,17 +853,17 @@ html.embed .cta{margin:14px 0 6px}
   </div>
 </main>
 
-<div class="overlay" id="card" hidden>
-  <article class="sheet" role="dialog" aria-modal="true" aria-labelledby="card-title">
+<div class="overlay for-card" id="card" hidden>
+  <article class="sheet card" role="dialog" aria-modal="true" aria-labelledby="card-title">
     <button class="close" type="button" aria-label="Close">×</button>
     <div class="gallery">
       <figure class="photo" id="card-photo" title="Click to close"></figure>
       <button class="nav prev" id="card-prev" type="button" aria-label="Previous photo" hidden>‹</button>
       <button class="nav next" id="card-next" type="button" aria-label="Next photo" hidden>›</button>
+      <div class="credit" id="card-credit" hidden></div>
       <div class="count" id="card-count" hidden></div>
     </div>
-    <div class="credit" id="card-credit" hidden></div>
-    <div class="body">
+    <div class="body" id="card-body">
       <div class="tag" id="card-tag"></div>
       <h2 id="card-title"></h2>
       <div class="place" id="card-place"></div>
@@ -856,18 +880,22 @@ html.embed .cta{margin:14px 0 6px}
     <form id="report-form" novalidate>
       <h2 id="report-title">Report an object</h2>
       <p class="lead">A metal object from the industrial past that lives on as a being of its own. Tell us what it is and where it stands.</p>
-      <label for="f-object">What is it?</label>
-      <input id="f-object" name="object" required placeholder="An old boiler painted as a whale">
-      <label for="f-where">Where is it?</label>
-      <input id="f-where" name="where" required placeholder="City, country, or coordinates">
+      <div class="fgrid">
+        <div><label for="f-object">What is it?</label>
+        <input id="f-object" name="object" required placeholder="An old boiler painted as a whale"></div>
+        <div><label for="f-where">Where is it?</label>
+        <input id="f-where" name="where" required placeholder="City, country, or coordinates"></div>
+      </div>
       <label for="f-links">Links to photos or articles</label>
       <textarea id="f-links" name="links" required placeholder="One link per line"></textarea>
       <label for="f-why">Why do you think it belongs here? <span class="opt">(optional)</span></label>
       <textarea id="f-why" name="why"></textarea>
-      <label for="f-name">Your name <span class="opt">(optional)</span></label>
-      <input id="f-name" name="name" autocomplete="name">
-      <label for="f-email">Your email</label>
-      <input id="f-email" name="email" type="email" required autocomplete="email" placeholder="So we can ask a question or thank you">
+      <div class="fgrid">
+        <div><label for="f-name">Your name <span class="opt">(optional)</span></label>
+        <input id="f-name" name="name" autocomplete="name"></div>
+        <div><label for="f-email">Your email</label>
+        <input id="f-email" name="email" type="email" required autocomplete="email" placeholder="To ask a question or thank you"></div>
+      </div>
       <div class="hp" aria-hidden="true"><label for="f-website">Website</label><input id="f-website" name="website" tabindex="-1" autocomplete="off"></div>
       <button class="btn" type="submit">Send</button>
       <div class="msg" id="report-msg" role="status"></div>
@@ -1294,8 +1322,22 @@ html.embed .cta{margin:14px 0 6px}
     }
     document.getElementById('card-links').innerHTML = links;
     show(card);
+    fitCard();
     setHash(slug(o.code));
   }
+
+  // shrink the card text step by step until it fits without scrolling
+  function fitCard(){
+    if (card.hidden) return;
+    var body = document.getElementById('card-body');
+    var fs = 16;
+    body.style.setProperty('--fs', fs + 'px');
+    while (fs > 10 && body.scrollHeight > body.clientHeight + 1) {
+      fs -= 0.5;
+      body.style.setProperty('--fs', fs + 'px');
+    }
+  }
+  window.addEventListener('resize', fitCard);
 
   document.getElementById('card-photo').addEventListener('click', function(){ hide(card); });
 
