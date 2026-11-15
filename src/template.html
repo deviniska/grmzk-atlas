@@ -8,7 +8,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
-<script>if (/[?&]embed(=|&|$)/.test(location.search)) document.documentElement.className += ' embed';</script>
+<script>
+if (/[?&]embed(=|&|$)/.test(location.search)) document.documentElement.className += ' embed';
+window.LANG = (/[?&]lang=(en|lv|ru)(&|$)/.exec(location.search) || [0, 'en'])[1];
+document.documentElement.lang = window.LANG;
+</script>
 <style>/*LEAFLET_CSS*/</style>
 <style>
 :root{
@@ -19,7 +23,15 @@
 html,body{margin:0;padding:0}
 body{background:var(--page);color:var(--ink);font:400 16px/24px Roboto,Nunito,sans-serif;-webkit-font-smoothing:antialiased}
 a{color:inherit}
-.wrap{max-width:1180px;margin:0 auto;padding:72px 24px 64px}
+.wrap{position:relative;max-width:1180px;margin:0 auto;padding:72px 24px 64px}
+
+/* language switch: one round mark, the other languages open beside it */
+.lang{position:absolute;top:20px;right:24px;z-index:10;display:flex;flex-direction:row-reverse;align-items:center;gap:6px}
+.lang .cur,.lang a{all:unset;box-sizing:border-box;cursor:pointer;width:30px;height:30px;border-radius:50%;border:1px solid var(--ink);background:var(--page);color:var(--ink);font-size:11px;line-height:1;letter-spacing:.05em;display:flex;align-items:center;justify-content:center}
+.lang .cur:hover,.lang a:hover,.lang a:focus-visible,.lang .cur:focus-visible{background:var(--ink);color:var(--page)}
+.lang .opts{display:none;flex-direction:row-reverse;gap:6px}
+.lang.open .opts{display:flex}
+@media (hover:hover){ .lang:hover .opts{display:flex} }
 header{text-align:center}
 h1{font:400 48px/1.3 Roboto,sans-serif;margin:0;letter-spacing:.005em}
 .kicker{margin-top:6px;font-size:14px;line-height:18px;text-transform:uppercase;letter-spacing:.06em}
@@ -154,7 +166,8 @@ form .btn{margin-top:16px}
 /* embedded on deviniska.com: no title or intro, the map fills the frame */
 html.embed .wrap{max-width:none;padding:0;display:flex;flex-direction:column;height:100vh}
 html.embed header,html.embed .intro{display:none}
-html.embed .legend{margin:4px 0 12px}
+html.embed .legend{margin:4px 0 12px;padding:0 44px}
+html.embed .lang{top:0;right:4px}
 html.embed #map{flex:1;height:auto;min-height:300px}
 html.embed .cta{margin:14px 0 6px}
 
@@ -172,32 +185,33 @@ html.embed .cta{margin:14px 0 6px}
 </head>
 <body>
 <main class="wrap">
+  <nav class="lang" id="lang"></nav>
   <header>
-    <h1>GRMZK Atlas</h1>
-    <div class="kicker">· Field register of the GRMZK research ·</div>
+    <h1 data-t="title">GRMZK Atlas</h1>
+    <div class="kicker" data-t="kicker">· Field register of the GRMZK research ·</div>
   </header>
 
   <section class="intro">
-    <p>GRMZK-1, a Gravitational Resonance Modulator of Zone K, was discovered in July 2025 on the left bank of the Daugava. We believe it to be a surviving element of an ancient global network of Gravitational Resonators that held the planet in balance by accumulating human warmth. If the network was global, other elements must have survived: metal bodies of the industrial past that outlived their work and stayed among people. This atlas is our field register of those elements, the gromozekas, and of the state in which each one was found. If you have met one, report it to us.</p>
+    <p data-t="intro">GRMZK-1, a Gravitational Resonance Modulator of Zone K, was discovered in July 2025 on the left bank of the Daugava. We believe it to be a surviving element of an ancient global network of Gravitational Resonators that held the planet in balance by accumulating human warmth. If the network was global, other elements must have survived: metal bodies of the industrial past that outlived their work and stayed among people. This atlas is our field register of those elements, the gromozekas, and of the state in which each one was found. If you have met one, report it to us.</p>
   </section>
 
-  <ul class="legend" id="legend" aria-label="Filter by state"></ul>
+  <ul class="legend" id="legend" aria-label="Filter by state" data-t-aria="legendAria"></ul>
 
-  <div id="map" role="region" aria-label="Map of gromozekas"></div>
+  <div id="map" role="region" aria-label="Map of gromozekas" data-t-aria="mapAria"></div>
 
   <div class="cta">
-    <button class="btn" id="report-open" type="button">Report an object</button>
-    <small>Every report is checked by the research group before it enters the register.</small>
+    <button class="btn" id="report-open" type="button" data-t="cta">Report an object</button>
+    <small data-t="ctaNote">Every report is checked by the research group before it enters the register.</small>
   </div>
 </main>
 
 <div class="overlay for-card" id="card" hidden>
   <article class="sheet card" role="dialog" aria-modal="true" aria-labelledby="card-title">
-    <button class="close" type="button" aria-label="Close">×</button>
+    <button class="close" type="button" aria-label="Close" data-t-aria="close">×</button>
     <div class="gallery">
-      <figure class="photo" id="card-photo" title="Click to close"></figure>
-      <button class="nav prev" id="card-prev" type="button" aria-label="Previous photo" hidden>‹</button>
-      <button class="nav next" id="card-next" type="button" aria-label="Next photo" hidden>›</button>
+      <figure class="photo" id="card-photo" title="Click to close" data-t-title="photoClose"></figure>
+      <button class="nav prev" id="card-prev" type="button" aria-label="Previous photo" data-t-aria="prev" hidden>‹</button>
+      <button class="nav next" id="card-next" type="button" aria-label="Next photo" data-t-aria="next" hidden>›</button>
       <div class="credit" id="card-credit" hidden></div>
       <div class="count" id="card-count" hidden></div>
     </div>
@@ -214,28 +228,29 @@ html.embed .cta{margin:14px 0 6px}
 
 <div class="overlay" id="report" hidden>
   <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="report-title">
-    <button class="close" type="button" aria-label="Close">×</button>
+    <button class="close" type="button" aria-label="Close" data-t-aria="close">×</button>
     <form id="report-form" novalidate>
-      <h2 id="report-title">Report an object</h2>
-      <p class="lead">A metal object from the industrial past that lives on as a being of its own. Tell us what it is and where it stands.</p>
+      <h2 id="report-title" data-t="cta">Report an object</h2>
+      <p class="lead" data-t="lead">A metal object from the industrial past that lives on as a being of its own. Tell us what it is and where it stands.</p>
       <div class="fgrid">
-        <div><label for="f-object">What is it?</label>
-        <input id="f-object" name="object" required placeholder="An old boiler painted as a whale"></div>
-        <div><label for="f-where">Where is it?</label>
-        <input id="f-where" name="where" required placeholder="City, country, or coordinates"></div>
+        <div><label for="f-object" data-t="what">What is it?</label>
+        <input id="f-object" name="object" required placeholder="An old boiler painted as a whale" data-t-ph="whatPh"></div>
+        <div><label for="f-where" data-t="where">Where is it?</label>
+        <input id="f-where" name="where" required placeholder="City, country, or coordinates" data-t-ph="wherePh"></div>
       </div>
-      <label for="f-links">Links to photos or articles</label>
-      <textarea id="f-links" name="links" required placeholder="One link per line"></textarea>
-      <label for="f-why">Why do you think it belongs here? <span class="opt">(optional)</span></label>
+      <label for="f-links" data-t="links">Links to photos or articles</label>
+      <textarea id="f-links" name="links" required placeholder="One link per line" data-t-ph="linksPh"></textarea>
+      <label for="f-why"><span data-t="why">Why do you think it belongs here?</span> <span class="opt" data-t="optional">(optional)</span></label>
       <textarea id="f-why" name="why"></textarea>
       <div class="fgrid">
-        <div><label for="f-name">Your name <span class="opt">(optional)</span></label>
+        <div><label for="f-name"><span data-t="name">Your name</span> <span class="opt" data-t="optional">(optional)</span></label>
         <input id="f-name" name="name" autocomplete="name"></div>
-        <div><label for="f-email">Your email</label>
-        <input id="f-email" name="email" type="email" required autocomplete="email" placeholder="To ask a question or thank you"></div>
+        <div><label for="f-email" data-t="email">Your email</label>
+        <input id="f-email" name="email" type="email" required autocomplete="email" placeholder="To ask a question or thank you" data-t-ph="emailPh"></div>
       </div>
       <div class="hp" aria-hidden="true"><label for="f-website">Website</label><input id="f-website" name="website" tabindex="-1" autocomplete="off"></div>
-      <button class="btn" type="submit">Send</button>
+      <input type="hidden" name="lang" id="f-lang" value="en">
+      <button class="btn" type="submit" data-t="send">Send</button>
       <div class="msg" id="report-msg" role="status"></div>
     </form>
   </div>
@@ -254,11 +269,147 @@ html.embed .cta{margin:14px 0 6px}
   // ---- settings ----
   var DATA_URL = '/*DATA_URL*/';      // Apps Script web app URL; empty = use embedded data
   var SUBMIT_URL = '/*DATA_URL*/';    // the same URL receives reports; empty = mockup mode
+  // ---- languages ----
+  var LANG = window.LANG;
+  // the pages on deviniska.com that hold the map in each language (the switch leads there when embedded)
+  var PAGES = {
+    en: 'https://deviniska.com/grmzk-atlas',
+    lv: 'https://deviniska.com/lv/grmzk-atlas',
+    ru: 'https://deviniska.com/ru/grmzk-atlas'
+  };
+  // set to true once all three pages exist; until then the switch changes the language inside the frame
+  var PAGES_READY = false;
+  var I18N = {
+    en: {
+      title: 'GRMZK Atlas',
+      kicker: '· Field register of the GRMZK research ·',
+      intro: 'GRMZK-1, a Gravitational Resonance Modulator of Zone K, was discovered in July 2025 on the left bank of the Daugava. We believe it to be a surviving element of an ancient global network of Gravitational Resonators that held the planet in balance by accumulating human warmth. If the network was global, other elements must have survived: metal bodies of the industrial past that outlived their work and stayed among people. This atlas is our field register of those elements, the gromozekas, and of the state in which each one was found. If you have met one, report it to us.',
+      legendAria: 'Filter by state', mapAria: 'Map of gromozekas', langAria: 'Language',
+      cta: 'Report an object',
+      ctaNote: 'Every report is checked by the research group before it enters the register.',
+      close: 'Close', photoClose: 'Click to close', prev: 'Previous photo', next: 'Next photo',
+      zoomIn: 'Zoom in', photoPending: 'Photo pending', photo: 'Photo: ',
+      author: 'Author', size: 'Size', sources: 'Sources: ', osm: 'on OpenStreetMap',
+      loadError: 'The atlas could not load its data. Please try again later.',
+      sleeping: 'Sleeping', awakened: 'Awakened', reborn: 'Reborn', fading: 'Fading',
+      lead: 'A metal object from the industrial past that lives on as a being of its own. Tell us what it is and where it stands.',
+      what: 'What is it?', whatPh: 'An old boiler painted as a whale',
+      where: 'Where is it?', wherePh: 'City, country, or coordinates',
+      links: 'Links to photos or articles', linksPh: 'One link per line',
+      why: 'Why do you think it belongs here?', optional: '(optional)',
+      name: 'Your name', email: 'Your email', emailPh: 'To ask a question or thank you', send: 'Send',
+      msgMissing: 'Please fill in what it is, where it is, at least one link, and a valid email.',
+      msgMock: 'Thank you. This is a mockup, so nothing was sent.',
+      msgSending: 'Sending…', msgOk: 'Thank you. Your report has been received.',
+      msgError: 'Something went wrong. Please try again a bit later.'
+    },
+    lv: {
+      title: 'GRMZK atlants',
+      kicker: '· GRMZK pētījuma lauka reģistrs ·',
+      intro: 'GRMZK-1, K zonas gravitācijas rezonanses modulators, tika atklāts 2025. gada jūlijā Daugavas kreisajā krastā. Mēs uzskatām, ka tas ir saglabājies elements senā globālā gravitācijas rezonatoru tīklā, kas uzturēja planētu līdzsvarā, uzkrājot cilvēku siltumu. Ja tīkls bija globāls, ir jābūt saglabājušies arī citiem tā elementiem: industriālās pagātnes metāla ķermeņiem, kas pārdzīvoja savu darbu un palika starp cilvēkiem. Šis atlants ir mūsu lauka reģistrs šiem elementiem, gromozekām, un stāvoklim, kādā katra no tām tika atrasta. Ja esat sastapuši kādu no tām, ziņojiet mums.',
+      legendAria: 'Filtrs pēc stāvokļa', mapAria: 'Gromozeku karte', langAria: 'Valoda',
+      cta: 'Ziņot par objektu',
+      ctaNote: 'Pētnieku grupa pārbauda katru ziņojumu, pirms to iekļauj reģistrā.',
+      close: 'Aizvērt', photoClose: 'Noklikšķiniet, lai aizvērtu', prev: 'Iepriekšējā fotogrāfija', next: 'Nākamā fotogrāfija',
+      zoomIn: 'Pietuvināt', photoPending: 'Foto gaidāms', photo: 'Foto: ',
+      author: 'Autors', size: 'Izmērs', sources: 'Avoti: ', osm: 'OpenStreetMap kartē',
+      loadError: 'Atlantam neizdevās ielādēt datus. Lūdzu, mēģiniet vēlāk.',
+      sleeping: 'Guļošs', awakened: 'Pamodies', reborn: 'Atdzimis', fading: 'Izgaistošs',
+      lead: 'Metāla objekts no industriālās pagātnes, kas dzīvo tālāk kā patstāvīga būtne. Pastāstiet, kas tas ir un kur tas atrodas.',
+      what: 'Kas tas ir?', whatPh: 'Vecs katls, apgleznots kā valis',
+      where: 'Kur tas atrodas?', wherePh: 'Pilsēta, valsts vai koordinātas',
+      links: 'Saites uz fotogrāfijām vai rakstiem', linksPh: 'Viena saite katrā rindā',
+      why: 'Kāpēc, jūsuprāt, tam šeit vieta?', optional: '(nav obligāti)',
+      name: 'Jūsu vārds', email: 'Jūsu e-pasts', emailPh: 'Lai uzdotu jautājumu vai pateiktos', send: 'Sūtīt',
+      msgMissing: 'Lūdzu, norādiet, kas tas ir, kur tas atrodas, vismaz vienu saiti un derīgu e-pastu.',
+      msgMock: 'Paldies! Šis ir makets, tāpēc nekas netika nosūtīts.',
+      msgSending: 'Sūtām…', msgOk: 'Paldies! Jūsu ziņojums ir saņemts.',
+      msgError: 'Kaut kas nogāja greizi. Lūdzu, mēģiniet nedaudz vēlāk.'
+    },
+    ru: {
+      title: 'Атлас GRMZK',
+      kicker: '· Полевой реестр исследования GRMZK ·',
+      intro: 'GRMZK-1, Гравитационный резонансный модулятор зоны K, обнаружен в июле 2025 года на левом берегу Даугавы. Мы считаем его уцелевшим элементом древней глобальной сети гравитационных резонаторов, которые удерживали планету в равновесии, накапливая человеческое тепло. Если сеть была глобальной, должны были уцелеть и другие её элементы: металлические тела индустриального прошлого, которые пережили свою работу и остались среди людей. Этот атлас — наш полевой реестр этих элементов, громозек, и того состояния, в котором нашли каждую из них. Если вы встречали громозеку, сообщите нам.',
+      legendAria: 'Фильтр по состоянию', mapAria: 'Карта громозек', langAria: 'Язык',
+      cta: 'Сообщить об объекте',
+      ctaNote: 'Каждое сообщение исследовательская группа проверяет, прежде чем внести объект в реестр.',
+      close: 'Закрыть', photoClose: 'Нажмите, чтобы закрыть', prev: 'Предыдущее фото', next: 'Следующее фото',
+      zoomIn: 'Приблизить', photoPending: 'Фото ожидается', photo: 'Фото: ',
+      author: 'Автор', size: 'Размер', sources: 'Источники: ', osm: 'на OpenStreetMap',
+      loadError: 'Атлас не смог загрузить данные. Попробуйте позже.',
+      sleeping: 'Спящий', awakened: 'Пробуждённый', reborn: 'Переродившийся', fading: 'Угасающий',
+      lead: 'Металлический объект из индустриального прошлого, который живёт дальше как самостоятельное существо. Расскажите, что это и где он стоит.',
+      what: 'Что это?', whatPh: 'Старый котёл, раскрашенный под кита',
+      where: 'Где он стоит?', wherePh: 'Город, страна или координаты',
+      links: 'Ссылки на фото или статьи', linksPh: 'По одной ссылке в строке',
+      why: 'Почему, по-вашему, ему место здесь?', optional: '(необязательно)',
+      name: 'Ваше имя', email: 'Ваш email', emailPh: 'Чтобы задать вопрос или поблагодарить', send: 'Отправить',
+      msgMissing: 'Напишите, что это и где оно, дайте хотя бы одну ссылку и правильный email.',
+      msgMock: 'Спасибо. Это макет, поэтому ничего не отправлено.',
+      msgSending: 'Отправляем…', msgOk: 'Спасибо. Ваше сообщение получено.',
+      msgError: 'Что-то пошло не так. Попробуйте чуть позже.'
+    }
+  };
+  function t(k){ var d = I18N[LANG] || I18N.en; return d[k] != null ? d[k] : I18N.en[k]; }
+
+  function translatePage(){
+    document.title = t('title');
+    [].forEach.call(document.querySelectorAll('[data-t]'), function(el){ el.textContent = t(el.getAttribute('data-t')); });
+    [].forEach.call(document.querySelectorAll('[data-t-ph]'), function(el){ el.placeholder = t(el.getAttribute('data-t-ph')); });
+    [].forEach.call(document.querySelectorAll('[data-t-aria]'), function(el){ el.setAttribute('aria-label', t(el.getAttribute('data-t-aria'))); });
+    [].forEach.call(document.querySelectorAll('[data-t-title]'), function(el){ el.title = t(el.getAttribute('data-t-title')); });
+    document.getElementById('f-lang').value = LANG;
+  }
+
+  // the switch: the current language as one round mark; the others open next to it.
+  // Embedded on deviniska.com it leads to the page of that language; on its own it reloads with ?lang=
+  var EMBED = document.documentElement.classList.contains('embed');
+  var TO_PAGES = EMBED && PAGES_READY;
+  function langHref(l){
+    var h = location.hash || '';
+    if (TO_PAGES) return PAGES[l] + h;
+    var q = location.search.replace(/^\?/, '').split('&').filter(function(x){ return x && !/^lang=/.test(x); });
+    if (l !== 'en') q.push('lang=' + l);
+    return location.pathname + (q.length ? '?' + q.join('&') : '') + h;
+  }
+  function buildSwitch(){
+    var nav = document.getElementById('lang');
+    nav.setAttribute('aria-label', t('langAria'));
+    var cur = document.createElement('button');
+    cur.type = 'button'; cur.className = 'cur'; cur.textContent = LANG.toUpperCase();
+    cur.setAttribute('aria-expanded', 'false');
+    var opts = document.createElement('div'); opts.className = 'opts';
+    ['en', 'lv', 'ru'].filter(function(l){ return l !== LANG; }).forEach(function(l){
+      var a = document.createElement('a');
+      a.textContent = l.toUpperCase(); a.hreflang = l; a.lang = l;
+      a.href = langHref(l);
+      if (TO_PAGES) {
+        a.target = '_top';
+        a.addEventListener('click', function(e){
+          // if the host page does not let the frame lead it away, switch inside the frame
+          var inside = location.pathname + '?embed&lang=' + l + (location.hash || '');
+          setTimeout(function(){ location.href = inside; }, 700);
+        });
+      }
+      a.addEventListener('focus', function(){ a.href = langHref(l); });
+      a.addEventListener('mouseenter', function(){ a.href = langHref(l); });
+      opts.appendChild(a);
+    });
+    cur.addEventListener('click', function(){
+      var open = nav.classList.toggle('open');
+      cur.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    document.addEventListener('click', function(e){ if (!nav.contains(e.target)) { nav.classList.remove('open'); cur.setAttribute('aria-expanded', 'false'); } });
+    nav.appendChild(cur); nav.appendChild(opts);
+  }
+  translatePage();
+  buildSwitch();
+
   var STATUS = {
-    sleeping:  {label:'Sleeping'},
-    awakened:  {label:'Awakened'},
-    reborn:    {label:'Reborn'},
-    fading:    {label:'Fading'}
+    sleeping:  {label:t('sleeping')},
+    awakened:  {label:t('awakened')},
+    reborn:    {label:t('reborn')},
+    fading:    {label:t('fading')}
   };
   var ORDER = ['sleeping','awakened','reborn','fading'];
   var LAND_COLOR = '#E1E1DC';
@@ -430,7 +581,7 @@ html.embed .cta{margin:14px 0 6px}
       if (g.items.length > 1) {
         el.className = 'anchor count';
         el.textContent = g.items.length;
-        el.title = 'Zoom in';
+        el.title = t('zoomIn');
         el.addEventListener('click', function(){
           var bounds = L.latLngBounds(g.items.map(function(o){ return [o.lat, o.lng]; }));
           map.flyToBounds(bounds.pad(0.6), {maxZoom: 8, duration: .6});
@@ -572,7 +723,7 @@ html.embed .cta{margin:14px 0 6px}
   // ---- data ----
   function load(){
     if (DATA_URL) {
-      return fetch(DATA_URL).then(function(r){ return r.json(); }).then(function(d){ return d.objects || d; });
+      return fetch(DATA_URL + (LANG !== 'en' ? '?lang=' + LANG : '')).then(function(r){ return r.json(); }).then(function(d){ return d.objects || d; });
     }
     return Promise.resolve(window.EMBEDDED_DATA);
   }
@@ -588,7 +739,7 @@ html.embed .cta{margin:14px 0 6px}
     layout();
     openFromHash();
   }).catch(function(){
-    document.getElementById('map').insertAdjacentHTML('beforeend','<p style="position:absolute;z-index:1000;left:16px;top:8px;color:#4A4A43">The atlas could not load its data. Please try again later.</p>');
+    document.getElementById('map').insertAdjacentHTML('beforeend','<p style="position:absolute;z-index:1000;left:16px;top:8px;color:#4A4A43">'+esc(t('loadError'))+'</p>');
   });
 
   function buildLegend(){
@@ -622,7 +773,7 @@ html.embed .cta{margin:14px 0 6px}
     document.getElementById('card-next').hidden = !many;
     count.hidden = !many;
     if (!list.length) {
-      photo.innerHTML = '<span class="ph-code">'+gMark(o)+'</span><span class="ph-note">Photo pending</span>';
+      photo.innerHTML = '<span class="ph-code">'+gMark(o)+'</span><span class="ph-note">'+esc(t('photoPending'))+'</span>';
       credit.hidden = true;
       return;
     }
@@ -631,7 +782,7 @@ html.embed .cta{margin:14px 0 6px}
     photo.innerHTML = '<img src="'+attr(p.url)+'" alt="'+attr(o.name)+'">';
     count.textContent = (photoIdx + 1) + ' / ' + list.length;
     credit.hidden = !p.credit;
-    credit.innerHTML = p.credit ? 'Photo: ' + creditHtml(p.credit) : '';
+    credit.innerHTML = p.credit ? esc(t('photo')) + creditHtml(p.credit) : '';
   }
   document.getElementById('card-prev').addEventListener('click', function(){ showPhoto(photoIdx - 1); });
   document.getElementById('card-next').addEventListener('click', function(){ showPhoto(photoIdx + 1); });
@@ -645,16 +796,16 @@ html.embed .cta{margin:14px 0 6px}
     document.getElementById('card-place').textContent = [o.place, o.where].filter(Boolean).join(' · ');
     document.getElementById('card-desc').textContent = o.description || '';
     var facts = '';
-    if (o.author) facts += '<dt>Author</dt><dd>'+esc(o.author)+'</dd>';
-    if (o.size) facts += '<dt>Size</dt><dd>'+esc(o.size)+'</dd>';
+    if (o.author) facts += '<dt>'+esc(t('author'))+'</dt><dd>'+esc(o.author)+'</dd>';
+    if (o.size) facts += '<dt>'+esc(t('size'))+'</dt><dd>'+esc(o.size)+'</dd>';
     document.getElementById('card-facts').innerHTML = facts;
     var links = '';
     if (o.sources && o.sources.length) {
-      links += '<div>Sources: '+o.sources.map(function(u){ return '<a href="'+attr(u)+'" target="_blank" rel="noopener">'+esc(host(u))+'</a>'; }).join(', ')+'</div>';
+      links += '<div>'+esc(t('sources'))+o.sources.map(function(u){ return '<a href="'+attr(u)+'" target="_blank" rel="noopener">'+esc(host(u))+'</a>'; }).join(', ')+'</div>';
     }
     if (!o.approx && !/not disclosed|не раскрыва|netiek atklāt/i.test(o.where || '')) {
       var osm = 'https://www.openstreetmap.org/?mlat='+o.lat+'&mlon='+o.lng+'#map=15/'+o.lat+'/'+o.lng;
-      links += '<div><a href="'+osm+'" target="_blank" rel="noopener">'+o.lat.toFixed(4)+', '+o.lng.toFixed(4)+' on OpenStreetMap</a></div>';
+      links += '<div><a href="'+osm+'" target="_blank" rel="noopener">'+o.lat.toFixed(4)+', '+o.lng.toFixed(4)+' '+esc(t('osm'))+'</a></div>';
     }
     document.getElementById('card-links').innerHTML = links;
     show(card);
@@ -692,20 +843,20 @@ html.embed .cta{margin:14px 0 6px}
     var missing = ['object','where','links','email'].filter(function(k){ return !String(fd.get(k)||'').trim(); });
     var email = String(fd.get('email')||'');
     if (missing.length || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      msg.textContent = 'Please fill in what it is, where it is, at least one link, and a valid email.';
+      msg.textContent = t('msgMissing');
       return;
     }
     if (!SUBMIT_URL) {
-      msg.textContent = 'Thank you. This is a mockup, so nothing was sent.';
+      msg.textContent = t('msgMock');
       return;
     }
-    msg.textContent = 'Sending…';
+    msg.textContent = t('msgSending');
     var body = new URLSearchParams();
     fd.forEach(function(v,k){ body.append(k, v); });
     fetch(SUBMIT_URL, {method:'POST', body: body}).then(function(r){ return r.json(); }).then(function(r){
-      if (r && r.ok) { form.reset(); msg.textContent = 'Thank you. Your report has been received.'; }
+      if (r && r.ok) { form.reset(); document.getElementById('f-lang').value = LANG; msg.textContent = t('msgOk'); }
       else throw new Error();
-    }).catch(function(){ msg.textContent = 'Something went wrong. Please try again a bit later.'; });
+    }).catch(function(){ msg.textContent = t('msgError'); });
   });
 
   // ---- overlays ----

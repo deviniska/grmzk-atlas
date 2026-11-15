@@ -1,8 +1,9 @@
 /**
  * GRMZK Atlas — data and reports for the map on deviniska.com/grmzk-atlas
  *
- * GET  <web app URL>          -> JSON with all objects from the Atlas tab where On map = yes
- * GET  <web app URL>?fresh=1  -> the same, rebuilt right now (skips the 10-minute cache)
+ * GET  <web app URL>          -> JSON with all objects from the Atlas tab where On map = yes (English)
+ * GET  <web app URL>?lang=ru  -> the same in Russian (lang=lv: Latvian); an empty "(RU)" / "(LV)" cell falls back to English
+ * GET  <web app URL>?fresh=1  -> rebuilt right now (skips the 10-minute cache); combine with lang: ?lang=ru&fresh=1
  * POST <web app URL>          -> a report from the site form: a new row on the Reports tab + an email to you
  */
 
@@ -11,8 +12,12 @@ const ATLAS_SHEET = 'Atlas';
 const REPORTS_SHEET = 'Reports';
 const CACHE_SECONDS = 600;
 
+const LANGS = ['en', 'lv', 'ru'];
+// translated columns: "Name (RU)", "Description (LV)" and so on
+const TRANSLATED = ['name', 'place', 'location', 'author', 'size', 'description'];
+
 const STATUS = {
-  'reference': 'reference',
+  'reference': 'awakened', // GRMZK-1 used to be marked as the reference object
   'sleeping': 'sleeping',
   'awakened': 'awakened',
   'reborn': 'reborn',
@@ -22,17 +27,20 @@ const STATUS = {
 // ---------- reading ----------
 
 function doGet(e) {
-  const fresh = e && e.parameter && e.parameter.fresh === '1';
+  const p = (e && e.parameter) || {};
+  const fresh = p.fresh === '1';
+  const lang = LANGS.indexOf(String(p.lang || '').toLowerCase()) > 0 ? String(p.lang).toLowerCase() : 'en';
   const cache = CacheService.getScriptCache();
-  let json = fresh ? null : cache.get('atlas');
+  let json = fresh ? null : cache.get('atlas_' + lang);
   if (!json) {
-    json = JSON.stringify({ updated: new Date().toISOString(), objects: buildObjects_() });
-    if (json.length < 95000) cache.put('atlas', json, CACHE_SECONDS);
+    json = JSON.stringify({ updated: new Date().toISOString(), lang: lang, objects: buildObjects_(lang) });
+    if (json.length < 95000) cache.put('atlas_' + lang, json, CACHE_SECONDS);
   }
   return ContentService.createTextOutput(json).setMimeType(ContentService.MimeType.JSON);
 }
 
-function buildObjects_() {
+function buildObjects_(lang) {
+  lang = lang || 'en';
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(ATLAS_SHEET);
   const values = sheet.getDataRange().getValues();
   const head = values.shift().map(function (h) { return String(h).trim().toLowerCase(); });
@@ -42,6 +50,14 @@ function buildObjects_() {
     where: col('location'), lat: col('latitude'), lng: col('longitude'), author: col('author'),
     size: col('size'), description: col('description'), links: col('photo links'),
     credits: col('photo credits'), sources: col('sources'), onMap: col('on map')
+  };
+  // column of the translation for this language, or -1
+  const T = {};
+  TRANSLATED.forEach(function (f) { T[f] = lang === 'en' ? -1 : col(f + ' (' + lang + ')'); });
+  // the translation if its cell is filled, otherwise the English text
+  const text = function (r, f, enCol) {
+    const t = T[f] >= 0 ? String(r[T[f]] || '').trim() : '';
+    return t || String(r[enCol] || '');
   };
   const files = photoIndex_();
   const out = [];
@@ -68,15 +84,16 @@ function buildObjects_() {
 
     out.push({
       code: code,
-      name: String(r[C.name] || ''),
+      name: text(r, 'name', C.name),
       status: status,
-      place: String(r[C.place] || ''),
-      where: String(r[C.where] || ''),
+      place: text(r, 'place', C.place),
+      where: text(r, 'location', C.where),
+      approx: /not disclosed/i.test(String(r[C.where] || '')), // exact spot hidden: no map link
       lat: lat,
       lng: lng,
-      author: String(r[C.author] || ''),
-      size: String(r[C.size] || ''),
-      description: String(r[C.description] || ''),
+      author: text(r, 'author', C.author),
+      size: text(r, 'size', C.size),
+      description: text(r, 'description', C.description),
       photos: photos,
       preview: preview,
       sources: lines_(r[C.sources]),
@@ -136,7 +153,8 @@ function doPost(e) {
   try {
     SpreadsheetApp.getActiveSpreadsheet().getSheetByName(REPORTS_SHEET).appendRow([
       new Date(), clean_(p.object, 300), clean_(p.where, 300), clean_(p.links, 3000),
-      clean_(p.why, 4000), clean_(p.name, 200), clean_(p.email, 200), '', 'new', ''
+      clean_(p.why, 4000), clean_(p.name, 200), clean_(p.email, 200), '', 'new', '',
+      LANGS.indexOf(String(p.lang || '')) >= 0 ? String(p.lang) : ''
     ]);
   } finally {
     lock.releaseLock();
@@ -154,6 +172,7 @@ function doPost(e) {
       'Why: ' + (p.why || '—'),
       'Name: ' + (p.name || '—'),
       'Email: ' + p.email,
+      'Language: ' + (p.lang || '—'),
       '',
       'The report is on the Reports tab: ' + SpreadsheetApp.getActiveSpreadsheet().getUrl()
     ].join('\n')
@@ -174,7 +193,9 @@ function json_(obj) {
 
 // Run once from the editor to check the reading part: View → Logs shows how many objects were found.
 function testRead() {
-  const objects = buildObjects_();
+  const objects = buildObjects_('en');
   Logger.log(objects.length + ' objects on the map');
   Logger.log(JSON.stringify(objects[0], null, 2));
+  Logger.log(JSON.stringify(buildObjects_('ru')[1], null, 2));
+  Logger.log(JSON.stringify(buildObjects_('lv')[1], null, 2));
 }
