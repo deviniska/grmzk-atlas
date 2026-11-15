@@ -536,7 +536,7 @@ html.embed .cta{margin:14px 0 6px}
   }
   // preview: the photo named exactly by the code, otherwise the first photo (a)
   function previewOf(o){
-    if (o.preview) return o.preview;
+    if (o.preview) return smallUrl(o.preview);
     return o.photos && o.photos.length ? smallUrl(o.photos[0].url) : '';
   }
   // Wikimedia Commons serves any width: previews need only a small copy
