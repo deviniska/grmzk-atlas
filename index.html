@@ -693,7 +693,6 @@ h1{font:400 48px/1.3 Roboto,sans-serif;margin:0;letter-spacing:.005em}
 .legend button:focus-visible{outline:1px solid var(--ink);outline-offset:4px}
 .legend button[aria-pressed="false"]{opacity:.3}
 .legend .n{color:var(--soft)}
-.legend .ref{display:inline-flex;align-items:center;gap:9px;font-size:14px;color:var(--muted)}
 
 /* status marks */
 .dot{display:inline-block;width:12px;height:12px;border-radius:50%;flex:none}
@@ -701,7 +700,6 @@ h1{font:400 48px/1.3 Roboto,sans-serif;margin:0;letter-spacing:.005em}
 .s-sleeping{background:var(--sea);border:2px solid var(--muted)}
 .s-reborn{background:var(--ink);border-radius:0;width:10px;height:10px;transform:rotate(45deg);margin:1px}
 .s-fading{background:transparent;border:2px dotted var(--fading)}
-.s-reference{background:var(--wine);width:14px;height:14px;box-shadow:0 0 0 3px var(--sea),0 0 0 4px var(--wine)}
 
 /* map */
 #map{height:clamp(440px,70vh,780px);background:var(--sea)}
@@ -718,6 +716,8 @@ h1{font:400 48px/1.3 Roboto,sans-serif;margin:0;letter-spacing:.005em}
 .leaflet-map-pane svg.atlas-rays{position:absolute;left:0;top:0;width:1px;height:1px;overflow:visible;pointer-events:none;z-index:1}
 .atlas-rays line{stroke:var(--ray);stroke-width:1}
 .atlas-rays line.hot{stroke:var(--ink)}
+.atlas-rays circle.area{fill:rgba(29,30,32,.05);stroke:rgba(29,30,32,.32);stroke-width:1;stroke-dasharray:3 3}
+.atlas-rays circle.pt{fill:var(--muted);stroke:none}
 .anchor,.bubble{position:absolute;transform:translate(-50%,-50%)}
 .anchor{display:flex;align-items:center;justify-content:center;width:18px;height:18px;cursor:pointer;z-index:2}
 .anchor.count{width:26px;height:26px;border-radius:50%;background:var(--page);border:1px solid var(--ink);font-size:12px;line-height:1;color:var(--ink)}
@@ -730,9 +730,7 @@ h1{font:400 48px/1.3 Roboto,sans-serif;margin:0;letter-spacing:.005em}
 .bubble.b-sleeping{border:2px solid var(--muted)}
 .bubble.b-reborn{border:2px solid var(--ink)}
 .bubble.b-fading{border:2px dotted var(--fading)}
-.bubble.b-reference{border:2px solid var(--wine);box-shadow:0 0 0 3px var(--sea),0 0 0 4px var(--wine)}
 .bubble:hover,.bubble:focus-visible{box-shadow:0 0 0 3px var(--sea),0 0 0 4px var(--ink);outline:none}
-.bubble.b-reference:hover{box-shadow:0 0 0 3px var(--sea),0 0 0 5px var(--wine)}
 .atlas-label{position:absolute;transform:translate(-50%,0);white-space:nowrap;background:var(--page);border:1px solid var(--line);padding:3px 8px;font-size:12px;line-height:16px;color:var(--ink);pointer-events:none;z-index:4}
 .atlas-label[hidden]{display:none}
 
@@ -934,7 +932,6 @@ html.embed .cta{margin:14px 0 6px}
   var DATA_URL = 'https://script.google.com/macros/s/AKfycbwFpcSa0P3ZeaCv4buF37IGu3103luG7b7xjF5LoSfDrEjxjTEiICeUvJi9A-wVCS7j/exec';      // Apps Script web app URL; empty = use embedded data
   var SUBMIT_URL = 'https://script.google.com/macros/s/AKfycbwFpcSa0P3ZeaCv4buF37IGu3103luG7b7xjF5LoSfDrEjxjTEiICeUvJi9A-wVCS7j/exec';    // the same URL receives reports; empty = mockup mode
   var STATUS = {
-    reference: {label:'Reference'},
     sleeping:  {label:'Sleeping'},
     awakened:  {label:'Awakened'},
     reborn:    {label:'Reborn'},
@@ -944,7 +941,7 @@ html.embed .cta{margin:14px 0 6px}
   var LAND_COLOR = '#E1E1DC';
   var MERGE_PX = 46;      // anchors closer than this become one group
 
-  var visible = {sleeping:true, awakened:true, reborn:true, fading:true, reference:true};
+  var visible = {sleeping:true, awakened:true, reborn:true, fading:true};
   var objects = [];
   var byCode = {};
 
@@ -1026,26 +1023,32 @@ html.embed .cta{margin:14px 0 6px}
     shown.forEach(function(o){
       var p = map.latLngToLayerPoint([o.lat, o.lng]);
       var g = null;
-      if (o.status !== 'reference') {
-        for (var i = 0; i < groups.length; i++) {
-          var c = groups[i];
-          if (!c.ref && Math.hypot(c.x - p.x, c.y - p.y) < MERGE_PX) { g = c; break; }
-        }
+      for (var i = 0; i < groups.length; i++) {
+        var c = groups[i];
+        if (Math.hypot(c.x - p.x, c.y - p.y) < MERGE_PX) { g = c; break; }
       }
-      if (!g) { g = {x:p.x, y:p.y, sx:0, sy:0, items:[], ref:o.status === 'reference'}; groups.push(g); }
-      g.items.push(o); g.sx += p.x; g.sy += p.y;
+      if (!g) { g = {x:p.x, y:p.y, sx:0, sy:0, items:[], pts:[]}; groups.push(g); }
+      g.items.push(o); g.pts.push(p); g.sx += p.x; g.sy += p.y;
       g.x = g.sx / g.items.length; g.y = g.sy / g.items.length;
     });
 
-    // keep group anchors off the reference mark
-    var refG = groups.filter(function(g){ return g.ref; })[0];
-    if (refG) groups.forEach(function(g){
-      if (g === refG) return;
-      var dx = g.x - refG.x, dy = g.y - refG.y, d = Math.hypot(dx, dy), need = 30;
-      if (d < need) {
-        if (d < 0.01) { dx = 1; dy = -1; d = Math.SQRT2; }
-        g.x = refG.x + dx / d * need; g.y = refG.y + dy / d * need;
-      }
+    // a group shows the ground it covers: a light disc over all its objects, a small dot for each
+    groups.forEach(function(g){
+      if (g.items.length < 2) return;
+      var far = 0;
+      g.pts.forEach(function(p){ far = Math.max(far, Math.hypot(p.x - g.x, p.y - g.y)); });
+      var r = far + 10;
+      if (r < 20) return;
+      var area = document.createElementNS(SVGNS, 'circle');
+      area.setAttribute('class', 'area');
+      area.setAttribute('cx', g.x); area.setAttribute('cy', g.y); area.setAttribute('r', r);
+      rays.appendChild(area);
+      g.pts.forEach(function(p){
+        var dot = document.createElementNS(SVGNS, 'circle');
+        dot.setAttribute('class', 'pt');
+        dot.setAttribute('cx', p.x); dot.setAttribute('cy', p.y); dot.setAttribute('r', 2.5);
+        rays.appendChild(dot);
+      });
     });
 
     // 2. nodes: fixed anchors + 2–3 previews per group, picked anew on every zoom,
@@ -1065,13 +1068,6 @@ html.embed .cta{margin:14px 0 6px}
         pick = shuffle(g.items.slice()).slice(0, k);
       }
       var k = pick.length;
-      // the reference preview stands apart: due east, three and a half diameters away
-      if (g.ref) {
-        var rx = g.x + 3.5 * D, ry = g.y;
-        var rb = {x:rx, y:ry, fx:rx, fy:ry, tx:rx, ty:ry, r:R + 4, obj:pick[0], group:g, fixed:true};
-        nodes.push(rb);
-        return;
-      }
       var base = n === 1 ? awayAngle(g, groups) : Math.random() * 2 * Math.PI;
       var steps = shuffle(pick.map(function(_, i){ return i; }));
       pick.forEach(function(o, i){
@@ -1259,6 +1255,7 @@ html.embed .cta{margin:14px 0 6px}
   }
 
   load().then(function(list){
+    list.forEach(function(o){ if (o.status === 'reference') o.status = 'awakened'; });
     objects = list.filter(function(o){ return o.onMap !== false && STATUS[o.status] && isFinite(o.lat) && isFinite(o.lng) && o.lat !== null; });
     objects.forEach(function(o){ byCode[slug(o.code)] = o; });
     buildLegend();
@@ -1285,12 +1282,6 @@ html.embed .cta{margin:14px 0 6px}
       });
       ul.appendChild(li);
     });
-    var ref = objects.filter(function(o){ return o.status === 'reference'; })[0];
-    if (ref) {
-      var li = document.createElement('li');
-      li.innerHTML = '<span class="ref"><span class="dot s-reference"></span>'+esc(ref.code)+', the reference object</span>';
-      ul.appendChild(li);
-    }
   }
 
   // ---- card ----
@@ -1338,7 +1329,7 @@ html.embed .cta{margin:14px 0 6px}
     if (o.sources && o.sources.length) {
       links += '<div>Sources: '+o.sources.map(function(u){ return '<a href="'+attr(u)+'" target="_blank" rel="noopener">'+esc(host(u))+'</a>'; }).join(', ')+'</div>';
     }
-    if (o.status !== 'reference') {
+    if (!o.approx && !/not disclosed|не раскрыва|netiek atklāt/i.test(o.where || '')) {
       var osm = 'https://www.openstreetmap.org/?mlat='+o.lat+'&mlon='+o.lng+'#map=15/'+o.lat+'/'+o.lng;
       links += '<div><a href="'+osm+'" target="_blank" rel="noopener">'+o.lat.toFixed(4)+', '+o.lng.toFixed(4)+' on OpenStreetMap</a></div>';
     }
