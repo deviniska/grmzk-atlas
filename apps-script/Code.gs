@@ -87,6 +87,7 @@ function buildObjects_() {
 }
 
 // GRMZK-4.jpg -> preview, GRMZK-4a.jpg / GRMZK-4b.png … -> photos a, b …
+// The hyphen is optional: grmzk4a.jpg, GRMZK_4a.jpg and "grmzk 4a.jpg" work too.
 function photoIndex_() {
   const index = {};
   const it = DriveApp.getFolderById(PHOTO_FOLDER_ID).getFiles();
@@ -94,9 +95,9 @@ function photoIndex_() {
     const file = it.next();
     if (file.isTrashed() || String(file.getMimeType()).indexOf('image/') !== 0) continue;
     const base = file.getName().replace(/\.[^.]+$/, '').trim();
-    const m = base.match(/^(grmzk-\d+)([a-z])?$/i);
+    const m = base.match(/^grmzk[\s_-]*(\d+)\s*([a-z])?$/i);
     if (!m) continue;
-    const code = m[1].toUpperCase();
+    const code = 'GRMZK-' + Number(m[1]);
     const entry = index[code] || (index[code] = { preview: null, letters: {} });
     if (m[2]) entry.letters[m[2].toLowerCase()] = file.getId();
     else entry.preview = file.getId();
