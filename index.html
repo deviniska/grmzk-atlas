@@ -770,6 +770,7 @@ h1{font:400 48px/1.3 Roboto,sans-serif;margin:0;letter-spacing:.005em}
 .count[hidden]{display:none}
 .credit{position:absolute;left:10px;bottom:10px;z-index:2;max-width:calc(100% - 90px);background:rgba(255,255,255,.85);font-size:11px;line-height:16px;padding:2px 8px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .credit[hidden]{display:none}
+.credit a{color:inherit;text-decoration:underline;text-underline-offset:2px}
 .card .body{--fs:16px;font-size:var(--fs);line-height:1.5;min-width:0;min-height:0;overflow:hidden;padding:30px 30px 24px 30px}
 .tag{display:flex;align-items:center;gap:.6em;font-size:.8em;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding-right:36px}
 .card h2{font:400 1.85em/1.2 Roboto,sans-serif;margin:.45em 0 .2em}
@@ -1213,7 +1214,21 @@ html.embed .cta{margin:14px 0 6px}
   // preview: the photo named exactly by the code, otherwise the first photo (a)
   function previewOf(o){
     if (o.preview) return o.preview;
-    return o.photos && o.photos.length ? o.photos[0].url : '';
+    return o.photos && o.photos.length ? smallUrl(o.photos[0].url) : '';
+  }
+  // Wikimedia Commons serves any width: previews need only a small copy
+  function smallUrl(u){
+    return /commons\.wikimedia\.org\/wiki\/Special:FilePath\//.test(u) ? u.replace(/([?&])width=\d+/, '$1width=320') : u;
+  }
+  // "Jane Doe, CC BY-SA 4.0, Wikimedia Commons https://…" -> text + short link
+  function creditHtml(c){
+    var m = c.match(/https?:\/\/\S+/);
+    if (!m) return esc(c);
+    var url = m[0], host = '';
+    try { host = new URL(url).hostname.replace(/^www\./, ''); } catch(e) { return esc(c); }
+    var label = /(^|\.)wikimedia\.org$/.test(host) ? 'Wikimedia Commons' : host;
+    var text = c.replace(url, '').replace(/wikimedia commons/i, '').replace(/[\s,·;–-]+$/, '').trim();
+    return esc(text) + (text ? ', ' : '') + '<a href="'+attr(url)+'" target="_blank" rel="noopener">'+esc(label)+'</a>';
   }
 
   // a lone anchor sends its bubble away from its nearest neighbour
@@ -1295,7 +1310,7 @@ html.embed .cta{margin:14px 0 6px}
     photo.innerHTML = '<img src="'+attr(p.url)+'" alt="'+attr(o.name)+'">';
     count.textContent = (photoIdx + 1) + ' / ' + list.length;
     credit.hidden = !p.credit;
-    credit.textContent = p.credit ? 'Photo: ' + p.credit : '';
+    credit.innerHTML = p.credit ? 'Photo: ' + creditHtml(p.credit) : '';
   }
   document.getElementById('card-prev').addEventListener('click', function(){ showPhoto(photoIdx - 1); });
   document.getElementById('card-next').addEventListener('click', function(){ showPhoto(photoIdx + 1); });
