@@ -22,3 +22,9 @@ npm install
 DATA_URL="https://script.google.com/macros/s/…/exec" npm run live   # live data
 npm run mockup                                                       # data from src/data.json, form sends nothing
 ```
+
+## Previews
+
+Each object can have a drawn preview: a simplified line drawing on the object's dominant colour.
+`src/previews/gen.py` draws them (SVG, then PNG through `rsvg-convert`); the site uses the 256 px copies in `previews/`.
+The map picks a preview in this order: a file named exactly `GRMZK-N` in the Drive photo folder, then `previews/GRMZK-N.png`, then the first photo.

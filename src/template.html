@@ -534,10 +534,17 @@ html.embed .cta{margin:14px 0 6px}
     var n = String(o.code).replace(/^GRMZK-/i, '');
     return 'G<sub>' + esc(n) + '</sub>';
   }
-  // preview: the photo named exactly by the code, otherwise the first photo (a)
+  // A file named exactly GRMZK-N in the Drive folder wins (the script then sends a preview
+  // that is not the first photo). Otherwise the drawn preview from previews/, then the first photo.
+  var LOCAL_PREVIEWS = /*PREVIEWS*/;
+  function driveId(u){ var m = /googleusercontent\.com\/d\/([^=\/?]+)/.exec(u || ''); return m ? m[1] : ''; }
   function previewOf(o){
+    var first = o.photos && o.photos.length ? o.photos[0].url : '';
+    var own = driveId(o.preview) && driveId(o.preview) !== driveId(first);
+    if (own) return o.preview;
+    if (LOCAL_PREVIEWS.indexOf(o.code) >= 0) return 'previews/' + o.code + '.png';
     if (o.preview) return smallUrl(o.preview);
-    return o.photos && o.photos.length ? smallUrl(o.photos[0].url) : '';
+    return first ? smallUrl(first) : '';
   }
   // Wikimedia Commons serves any width: previews need only a small copy
   function smallUrl(u){

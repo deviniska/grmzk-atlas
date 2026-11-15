@@ -1211,10 +1211,17 @@ html.embed .cta{margin:14px 0 6px}
     var n = String(o.code).replace(/^GRMZK-/i, '');
     return 'G<sub>' + esc(n) + '</sub>';
   }
-  // preview: the photo named exactly by the code, otherwise the first photo (a)
+  // A file named exactly GRMZK-N in the Drive folder wins (the script then sends a preview
+  // that is not the first photo). Otherwise the drawn preview from previews/, then the first photo.
+  var LOCAL_PREVIEWS = ["GRMZK-2","GRMZK-3","GRMZK-4","GRMZK-5","GRMZK-6","GRMZK-7","GRMZK-8","GRMZK-9","GRMZK-10","GRMZK-11","GRMZK-12","GRMZK-13","GRMZK-14","GRMZK-15","GRMZK-16","GRMZK-17","GRMZK-18","GRMZK-19","GRMZK-20","GRMZK-21","GRMZK-22","GRMZK-23","GRMZK-24","GRMZK-25","GRMZK-26","GRMZK-27","GRMZK-28","GRMZK-29","GRMZK-30","GRMZK-31","GRMZK-32","GRMZK-33","GRMZK-34","GRMZK-35","GRMZK-36"];
+  function driveId(u){ var m = /googleusercontent\.com\/d\/([^=\/?]+)/.exec(u || ''); return m ? m[1] : ''; }
   function previewOf(o){
+    var first = o.photos && o.photos.length ? o.photos[0].url : '';
+    var own = driveId(o.preview) && driveId(o.preview) !== driveId(first);
+    if (own) return o.preview;
+    if (LOCAL_PREVIEWS.indexOf(o.code) >= 0) return 'previews/' + o.code + '.png';
     if (o.preview) return smallUrl(o.preview);
-    return o.photos && o.photos.length ? smallUrl(o.photos[0].url) : '';
+    return first ? smallUrl(first) : '';
   }
   // Wikimedia Commons serves any width: previews need only a small copy
   function smallUrl(u){

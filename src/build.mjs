@@ -19,6 +19,10 @@ const parts = {
   '/*LAND_JSON*/': read(nm + 'world-atlas/land-50m.json'),
   '/*DATA_JSON*/': url ? '[]' : safe(JSON.stringify(JSON.parse(read('data.json')))),
   '/*DATA_URL*/': url,
+  // drawn previews (previews/GRMZK-N.png next to index.html); only the live site has them
+  '/*PREVIEWS*/': JSON.stringify(url && fs.existsSync('previews')
+    ? fs.readdirSync('previews').filter(f => /^GRMZK-\d+\.png$/.test(f)).map(f => f.slice(0, -4))
+      .sort((a, b) => a.slice(6) - b.slice(6)) : []),
 };
 for (const [k, v] of Object.entries(parts)) {
   if (!html.includes(k)) throw new Error('missing placeholder ' + k);
