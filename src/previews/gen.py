@@ -392,6 +392,22 @@ def g36():  # Window to the Sun: gas sphere with the Sun projected on it
     return b
 
 
+def g37():  # Future SpaceShip: a rusting truck box waiting to become a spaceship (fading)
+    dash = ' style="stroke-dasharray:34 22"'
+    b = [P('M120,245 L400,215 L520,250')]                       # roof edges
+    b.append(P('M120,245 L245,228 L520,250', SW2))               # far roof edge
+    b.append(L(120, 245, 130, 460)); b.append(L(400, 215, 405, 505)); b.append(L(520, 250, 515, 440))
+    b.append(f'<path d="M130,460 L405,505 L515,440"{dash}/>')     # bottom edges dissolving
+    b.append(R(262, 262, 44, 92, 20, SW2)); b.append(R(322, 258, 44, 92, 20, SW2))   # door windows
+    b.append(P('M255,250 L258,488 M378,236 L381,500', SW2))       # door
+    b.append(R(160, 275, 66, 74, 4, SW2)); b.append(P('M160,275 L226,349 M226,275 L160,349', 8))  # boarded window
+    b.append(C(462, 300, 12, SW2))                               # round hole
+    b.append(P('M140,520 L232,512 M140,540 L232,532', SW2)); b.append(E(140, 530, 8, 10, SW2))     # pipe on the grass
+    b += [D(x, y, r) for x, y, r in [(185, 400, 9), (215, 430, 6), (450, 380, 10), (480, 410, 7), (350, 420, 6)]]  # rust
+    b.append(P('M470,120 V160 M450,140 H490', SW2)); b.append(P('M540,175 V199 M528,187 H552', 10))  # stars ahead
+    return ['<g transform="translate(-32,-50) scale(1.1)">'] + b + ['</g>']
+
+
 OBJECTS = {
     2: ('#6b3fa0', WHITE, g2),
     3: ('#d8cbc3', DARK, g3),
@@ -428,6 +444,7 @@ OBJECTS = {
     34: ('#7e868e', WHITE, g34),
     35: ('#2a7fd0', WHITE, g35),
     36: ('#d4622a', WHITE, g36),
+    37: ('#6f8a62', WHITE, g37),
 }
 
 if __name__ == '__main__':
