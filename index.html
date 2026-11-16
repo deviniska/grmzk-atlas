@@ -955,7 +955,7 @@ html.embed .cta{margin:14px 0 6px}
     ru: 'https://deviniska.com/ru/grmzk-atlas'
   };
   // set to true once all three pages exist; until then the switch changes the language inside the frame
-  var PAGES_READY = false;
+  var PAGES_READY = true;
   var I18N = {
     en: {
       title: 'GRMZK Atlas',
@@ -983,7 +983,7 @@ html.embed .cta{margin:14px 0 6px}
     lv: {
       title: 'GRMZK atlants',
       kicker: '· GRMZK pētījuma lauka reģistrs ·',
-      intro: 'GRMZK-1, K zonas gravitācijas rezonanses modulators, tika atklāts 2025. gada jūlijā Daugavas kreisajā krastā. Mēs uzskatām, ka tas ir saglabājies elements senā globālā gravitācijas rezonatoru tīklā, kas uzturēja planētu līdzsvarā, uzkrājot cilvēku siltumu. Ja tīkls bija globāls, ir jābūt saglabājušies arī citiem tā elementiem: industriālās pagātnes metāla ķermeņiem, kas pārdzīvoja savu darbu un palika starp cilvēkiem. Šis atlants ir mūsu lauka reģistrs šiem elementiem, gromozekām, un stāvoklim, kādā katra no tām tika atrasta. Ja esat sastapuši kādu no tām, ziņojiet mums.',
+      intro: 'GRMZK-1, K zonas gravitācijas rezonanses modulators, tika atklāts 2025. gada jūlijā Daugavas kreisajā krastā. Mēs uzskatām, ka tas ir saglabājies elements no sena globāla gravitācijas rezonatoru tīkla, kas uzturēja planētu līdzsvarā, uzkrājot cilvēku siltumu. Ja tīkls bija globāls, noteikti saglabājušies arī citi tā elementi: industriālās pagātnes metāla ķermeņi, kas pārdzīvoja savu darbu un palika starp cilvēkiem. Šis atlants ir mūsu lauka reģistrs, kurā pierakstām šos elementus, gromozekas, un stāvokli, kādā katra no tām atrasta. Ja esat sastapuši kādu no tām, ziņojiet mums.',
       legendAria: 'Filtrs pēc stāvokļa', mapAria: 'Gromozeku karte', langAria: 'Valoda',
       cta: 'Ziņot par objektu',
       ctaNote: 'Pētnieku grupa pārbauda katru ziņojumu, pirms to iekļauj reģistrā.',
@@ -1006,7 +1006,7 @@ html.embed .cta{margin:14px 0 6px}
     ru: {
       title: 'Атлас GRMZK',
       kicker: '· Полевой реестр исследования GRMZK ·',
-      intro: 'GRMZK-1, Гравитационный резонансный модулятор зоны K, обнаружен в июле 2025 года на левом берегу Даугавы. Мы считаем его уцелевшим элементом древней глобальной сети гравитационных резонаторов, которые удерживали планету в равновесии, накапливая человеческое тепло. Если сеть была глобальной, должны были уцелеть и другие её элементы: металлические тела индустриального прошлого, которые пережили свою работу и остались среди людей. Этот атлас — наш полевой реестр этих элементов, громозек, и того состояния, в котором нашли каждую из них. Если вы встречали громозеку, сообщите нам.',
+      intro: 'GRMZK-1, Гравитационный резонансный модулятор зоны K, обнаружен в июле 2025 года на левом берегу Даугавы. Мы считаем его уцелевшим элементом древней глобальной сети гравитационных резонаторов, которые удерживали планету в равновесии, накапливая человеческое тепло. Если сеть была глобальной, должны были уцелеть и другие её элементы: металлические тела индустриального прошлого, которые пережили свою работу и остались среди людей. Этот атлас — наш полевой реестр этих элементов, громозек, и того, в каком состоянии нашли каждую из них. Если вы встречали громозеку, сообщите нам.',
       legendAria: 'Фильтр по состоянию', mapAria: 'Карта громозек', langAria: 'Язык',
       cta: 'Сообщить об объекте',
       ctaNote: 'Каждое сообщение исследовательская группа проверяет, прежде чем внести объект в реестр.',
@@ -1044,7 +1044,7 @@ html.embed .cta{margin:14px 0 6px}
   var TO_PAGES = EMBED && PAGES_READY;
   function langHref(l){
     var h = location.hash || '';
-    if (TO_PAGES) return PAGES[l] + h;
+    if (TO_PAGES) return PAGES[l];   // the page cannot pass an open card on to the frame, so no #code
     var q = location.search.replace(/^\?/, '').split('&').filter(function(x){ return x && !/^lang=/.test(x); });
     if (l !== 'en') q.push('lang=' + l);
     return location.pathname + (q.length ? '?' + q.join('&') : '') + h;
@@ -1063,9 +1063,10 @@ html.embed .cta{margin:14px 0 6px}
       if (TO_PAGES) {
         a.target = '_top';
         a.addEventListener('click', function(e){
-          // if the host page does not let the frame lead it away, switch inside the frame
-          var inside = location.pathname + '?embed&lang=' + l + (location.hash || '');
-          setTimeout(function(){ location.href = inside; }, 700);
+          // the whole page goes to the other language. Only if the host page ever stops
+          // letting the frame lead it away does the frame switch on its own after a pause.
+          var inside = location.pathname + '?embed&lang=' + l;
+          setTimeout(function(){ location.href = inside; }, 2500);
         });
       }
       a.addEventListener('focus', function(){ a.href = langHref(l); });
