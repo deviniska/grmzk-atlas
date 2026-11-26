@@ -69,6 +69,19 @@ h1{font:400 48px/1.3 Roboto,sans-serif;margin:0;letter-spacing:.005em}
 .atlas-rays line.hot{stroke:var(--ink)}
 .atlas-rays circle.area{fill:rgba(29,30,32,.05);stroke:rgba(29,30,32,.32);stroke-width:1;stroke-dasharray:3 3}
 .atlas-rays circle.pt{fill:var(--muted);stroke:none}
+/* opening ritual: resonance calibration */
+.calib{position:absolute;inset:0;z-index:1100;pointer-events:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:rgba(243,243,242,.6);transition:opacity .45s ease}
+.calib.done{opacity:0}
+.calib .c-rings{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.calib .c-rings circle{fill:none;stroke:rgba(29,30,32,.32);stroke-width:1;stroke-dasharray:3 3}
+.calib .c-core{position:relative;width:120px;height:120px;border-radius:50%;background:var(--page);display:flex;align-items:center;justify-content:center}
+.calib .c-dial{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.calib .c-track{fill:none;stroke:var(--ink);stroke-width:1}
+.calib .c-arc{fill:none;stroke:var(--wine);stroke-width:3}
+.calib .c-pct{font:300 34px/1 Roboto,sans-serif;color:var(--ink);font-variant-numeric:tabular-nums;letter-spacing:.01em}
+.calib .c-pct small{font-size:.5em;margin-left:2px;color:var(--muted)}
+.calib .c-phase{position:relative;font-size:12px;line-height:16px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);background:var(--page);padding:3px 8px}
+@media (prefers-reduced-motion: reduce){.calib .c-rings{display:none}}
 .anchor,.bubble{position:absolute;transform:translate(-50%,-50%)}
 .anchor{display:flex;align-items:center;justify-content:center;width:18px;height:18px;cursor:pointer;z-index:2}
 .anchor.count{width:26px;height:26px;border-radius:50%;background:var(--page);border:1px solid var(--ink);font-size:12px;line-height:1;color:var(--ink)}
@@ -291,6 +304,7 @@ html.embed .cta{margin:14px 0 6px}
       zoomIn: 'Zoom in', photoPending: 'Photo pending', photo: 'Photo: ',
       author: 'Author', size: 'Size', sources: 'Sources: ', osm: 'on OpenStreetMap',
       loadError: 'The atlas could not load its data. Please try again later.',
+      phase1: 'Searching for signals', phase2: 'Calibrating resonance', phase3: 'Synchronising zones',
       sleeping: 'Sleeping', awakened: 'Awakened', reborn: 'Reborn', fading: 'Fading',
       lead: 'A metal object from the industrial past that lives on as a being of its own. Tell us what it is and where it stands.',
       what: 'What is it?', whatPh: 'An old boiler painted as a whale',
@@ -314,6 +328,7 @@ html.embed .cta{margin:14px 0 6px}
       zoomIn: 'Pietuvināt', photoPending: 'Foto gaidāms', photo: 'Foto: ',
       author: 'Autors', size: 'Izmērs', sources: 'Avoti: ', osm: 'OpenStreetMap kartē',
       loadError: 'Atlantam neizdevās ielādēt datus. Lūdzu, mēģiniet vēlāk.',
+      phase1: 'Signālu meklēšana', phase2: 'Rezonanses kalibrēšana', phase3: 'Zonu sinhronizācija',
       sleeping: 'Guļošs', awakened: 'Pamodies', reborn: 'Atdzimis', fading: 'Izgaistošs',
       lead: 'Metāla objekts no industriālās pagātnes, kas dzīvo tālāk kā patstāvīga būtne. Pastāstiet, kas tas ir un kur tas atrodas.',
       what: 'Kas tas ir?', whatPh: 'Vecs katls, apgleznots kā valis',
@@ -337,6 +352,7 @@ html.embed .cta{margin:14px 0 6px}
       zoomIn: 'Приблизить', photoPending: 'Фото ожидается', photo: 'Фото: ',
       author: 'Автор', size: 'Размер', sources: 'Источники: ', osm: 'на OpenStreetMap',
       loadError: 'Атлас не смог загрузить данные. Попробуйте позже.',
+      phase1: 'Поиск сигналов', phase2: 'Калибровка резонанса', phase3: 'Синхронизация зон',
       sleeping: 'Спящий', awakened: 'Пробуждённый', reborn: 'Переродившийся', fading: 'Угасающий',
       lead: 'Металлический объект из индустриального прошлого, который живёт дальше как самостоятельное существо. Расскажите, что это и где он стоит.',
       what: 'Что это?', whatPh: 'Старый котёл, раскрашенный под кита',
@@ -729,6 +745,7 @@ html.embed .cta{margin:14px 0 6px}
     return Promise.resolve(window.EMBEDDED_DATA);
   }
 
+  var calib = startCalibration();
   load().then(function(list){
     list.forEach(function(o){ if (o.status === 'reference') o.status = 'awakened'; });
     objects = list.filter(function(o){ return o.onMap !== false && STATUS[o.status] && isFinite(o.lat) && isFinite(o.lng) && o.lat !== null; });
@@ -738,10 +755,74 @@ html.embed .cta{margin:14px 0 6px}
     var pad = map.getSize().x < 560 ? 24 : 60;
     map.fitBounds(b, {padding:[pad,pad], maxZoom:3, animate:false});
     layout();
+    calib.finish();
     openFromHash();
   }).catch(function(){
+    calib.abort();
     document.getElementById('map').insertAdjacentHTML('beforeend','<p style="position:absolute;z-index:1000;left:16px;top:8px;color:#4A4A43">'+esc(t('loadError'))+'</p>');
   });
+
+  // Opening ritual: a calibration dial over the map. The percentage is staged, not measured:
+  // it rises quickly, slows down, and closes to 100% once the data is in, after at least MIN ms.
+  function startCalibration(){
+    var mapEl = document.getElementById('map');
+    var NS = 'http://www.w3.org/2000/svg';
+    var el = document.createElement('div');
+    el.className = 'calib';
+    el.setAttribute('aria-hidden', 'true');
+    el.innerHTML = '<svg class="c-rings"></svg>' +
+      '<div class="c-core"><svg class="c-dial" viewBox="0 0 120 120"><circle class="c-track" cx="60" cy="60" r="59.5"/>' +
+      '<circle class="c-arc" cx="60" cy="60" r="58" transform="rotate(-90 60 60)"/></svg>' +
+      '<span class="c-pct">0<small>%</small></span></div><div class="c-phase"></div>';
+    mapEl.appendChild(el);
+    mapEl.setAttribute('aria-busy', 'true');
+    var ringsSvg = el.querySelector('.c-rings'), core = el.querySelector('.c-core');
+    var arc = el.querySelector('.c-arc'), num = el.querySelector('.c-pct').firstChild, phaseEl = el.querySelector('.c-phase');
+    var rings = [];
+    for (var i = 0; i < 3; i++) { var c = document.createElementNS(NS, 'circle'); ringsSvg.appendChild(c); rings.push(c); }
+    var C = 2 * Math.PI * 58;
+    arc.style.strokeDasharray = C; arc.style.strokeDashoffset = C;
+    var reduce = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+    var MIN = 2200, FIN = 650, PERIOD = 2600;
+    var t0 = performance.now(), readyAt = null, finAt = null, finFrom = 0, phase = -1, stopped = false;
+    function staged(ms){ return 95 * (1 - Math.exp(-ms / 2300)); }
+    function frame(now){
+      if (stopped) return;
+      var ms = now - t0, p;
+      if (readyAt !== null && finAt === null && ms >= Math.max(readyAt, MIN - FIN)) { finAt = ms; finFrom = staged(ms); }
+      if (finAt !== null) { var k = Math.min(1, (ms - finAt) / FIN); p = finFrom + (100 - finFrom) * (1 - Math.pow(1 - k, 3)); }
+      else p = staged(ms);
+      num.nodeValue = String(Math.floor(p));
+      arc.style.strokeDashoffset = C * (1 - p / 100);
+      var ph = p < 34 ? 1 : p < 67 ? 2 : 3;
+      if (ph !== phase) { phase = ph; phaseEl.textContent = t('phase' + ph); }
+      if (!reduce) {
+        var box = el.getBoundingClientRect(), cb = core.getBoundingClientRect();
+        var cx = cb.left - box.left + cb.width / 2, cy = cb.top - box.top + cb.height / 2;
+        var R = Math.hypot(Math.max(cx, box.width - cx), Math.max(cy, box.height - cy)), r0 = cb.width / 2 + 6;
+        rings.forEach(function(c, i){
+          var f = (ms / PERIOD + i / rings.length) % 1;
+          c.setAttribute('cx', cx); c.setAttribute('cy', cy);
+          c.setAttribute('r', r0 + (R - r0) * f);
+          c.style.opacity = String((1 - f) * 0.9);
+        });
+      }
+      if (finAt !== null && ms - finAt >= FIN) { done(); return; }
+      requestAnimationFrame(frame);
+    }
+    function done(){
+      stopped = true;
+      num.nodeValue = '100';
+      mapEl.removeAttribute('aria-busy');
+      el.classList.add('done');
+      setTimeout(function(){ el.remove(); }, 500);
+    }
+    requestAnimationFrame(frame);
+    return {
+      finish: function(){ if (readyAt === null) readyAt = performance.now() - t0; },
+      abort: function(){ stopped = true; mapEl.removeAttribute('aria-busy'); el.remove(); }
+    };
+  }
 
   function buildLegend(){
     var ul = document.getElementById('legend');
