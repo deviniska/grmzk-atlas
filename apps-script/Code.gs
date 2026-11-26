@@ -4,6 +4,7 @@
  * GET  <web app URL>          -> JSON with all objects from the Atlas tab where On map = yes (English)
  * GET  <web app URL>?lang=ru  -> the same in Russian (lang=lv: Latvian); an empty "(RU)" / "(LV)" cell falls back to English
  * GET  <web app URL>?fresh=1  -> rebuilt right now (skips the 10-minute cache); combine with lang: ?lang=ru&fresh=1
+ *      Each object also carries the Resonance layer: "resonance" (Resonance (EN/RU/LV) columns) and "index" (Grmzk index, 0–100)
  * POST <web app URL>          -> a report from the site form: a new row on the Reports tab + an email to you
  */
 
@@ -34,7 +35,8 @@ function doGet(e) {
   let json = fresh ? null : cache.get('atlas_' + lang);
   if (!json) {
     json = JSON.stringify({ updated: new Date().toISOString(), lang: lang, objects: buildObjects_(lang) });
-    if (json.length < 95000) cache.put('atlas_' + lang, json, CACHE_SECONDS);
+    // the cache holds at most 100 KB per value; a bigger answer is simply not cached
+    try { if (json.length < 95000) cache.put('atlas_' + lang, json, CACHE_SECONDS); } catch (err) {}
   }
   return ContentService.createTextOutput(json).setMimeType(ContentService.MimeType.JSON);
 }
@@ -49,7 +51,8 @@ function buildObjects_(lang) {
     code: col('code'), name: col('name'), status: col('status'), place: col('place'),
     where: col('location'), lat: col('latitude'), lng: col('longitude'), author: col('author'),
     size: col('size'), description: col('description'), links: col('photo links'),
-    credits: col('photo credits'), sources: col('sources'), onMap: col('on map')
+    credits: col('photo credits'), sources: col('sources'), onMap: col('on map'),
+    resonanceEn: col('resonance (en)'), resonance: col('resonance (' + lang + ')'), index: col('grmzk index')
   };
   // column of the translation for this language, or -1
   const T = {};
@@ -94,6 +97,9 @@ function buildObjects_(lang) {
       author: text(r, 'author', C.author),
       size: text(r, 'size', C.size),
       description: text(r, 'description', C.description),
+      // Resonance layer: the researchers' text (falls back to English) and the index of gromozekness, 0–100
+      resonance: String((C.resonance >= 0 && r[C.resonance]) || (C.resonanceEn >= 0 && r[C.resonanceEn]) || '').trim(),
+      index: C.index >= 0 && r[C.index] !== '' && isFinite(Number(r[C.index])) ? Math.max(0, Math.min(100, Math.round(Number(r[C.index])))) : null,
       photos: photos,
       preview: preview,
       sources: lines_(r[C.sources]),

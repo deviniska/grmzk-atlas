@@ -35,3 +35,14 @@ The page speaks English, Latvian and Russian: `?lang=lv`, `?lang=ru` (no paramet
 Interface texts live in the `I18N` dictionary in `src/template.html`.
 Object texts come from the Atlas tab: columns `Name (RU)`, `Place (RU)`, `Location (RU)`, `Author (RU)`, `Size (RU)`, `Description (RU)` and the same with `(LV)`; an empty cell falls back to English.
 On deviniska.com each language has its own page with the same embed code plus `&lang=..`; once those pages exist, set `PAGES_READY = true` so the round switch leads to them.
+
+## Archive and Resonance
+
+The map opens in **Archive**: neutral marks, the factual description (`Description`, `Description (RU)`, `Description (LV)`), author and size.
+The switch in the top-left corner of the map turns on **Resonance** after a short calibration: states and their legend,
+a network (each object to its two nearest neighbours, plus a thin line from every object to GRMZK-1) and waves
+(awakened: round waves, reborn: square waves, fading: one faint dotted wave, sleeping: none).
+The card then shows the researchers' text from `Resonance (EN)`, `Resonance (RU)`, `Resonance (LV)` and the
+`Grmzk index` (0–100, measured against GRMZK-1 = 100). An empty Resonance cell falls back to English, then to the archive text.
+`?mode=resonance` opens the map straight in Resonance. Until the first switch, a wave runs from the switch every few seconds;
+the browser remembers the first switch (`localStorage`).

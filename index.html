@@ -12,6 +12,7 @@
 if (/[?&]embed(=|&|$)/.test(location.search)) document.documentElement.className += ' embed';
 window.LANG = (/[?&]lang=(en|lv|ru)(&|$)/.exec(location.search) || [0, 'en'])[1];
 document.documentElement.lang = window.LANG;
+document.documentElement.setAttribute('data-mode', /[?&]mode=resonance(&|$)/.test(location.search) ? 'resonance' : 'archive');
 </script>
 <style>/* required styles */
 
@@ -712,6 +713,12 @@ h1{font:400 48px/1.3 Roboto,sans-serif;margin:0;letter-spacing:.005em}
 .s-sleeping{background:var(--sea);border:2px solid var(--muted)}
 .s-reborn{background:var(--ink);border-radius:0;width:10px;height:10px;transform:rotate(45deg);margin:1px}
 .s-fading{background:transparent;border:2px dotted var(--fading)}
+.s-archive{background:var(--muted);width:10px;height:10px;margin:1px}
+/* Archive mode: neutral marks; states, network and waves belong to Resonance */
+html[data-mode="archive"] .anchor .dot{background:var(--muted);border:none;border-radius:50%;transform:none;width:10px;height:10px;margin:0}
+html[data-mode="archive"] .bubble{border:2px solid var(--muted)}
+html[data-mode="archive"] .legend .n{color:var(--muted)}
+.legend .static{display:inline-flex;align-items:center;gap:9px;font-size:14px;line-height:20px;color:var(--ink)}
 
 /* map */
 #map{height:clamp(440px,70vh,780px);background:var(--sea)}
@@ -724,6 +731,31 @@ h1{font:400 48px/1.3 Roboto,sans-serif;margin:0;letter-spacing:.005em}
 .leaflet-right .leaflet-control-zoom{margin-right:14px}
 .map-back{all:unset;box-sizing:border-box;position:absolute;left:50%;bottom:18px;transform:translateX(-50%);z-index:1000;cursor:pointer;display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 18px 0 16px;border-radius:20px;border:1px solid rgba(29,30,32,.45);background:rgba(255,255,255,.45);color:var(--ink);font-size:14px;line-height:1;letter-spacing:.02em;white-space:nowrap;transition:background .15s,color .15s,border-color .15s}
 .map-back[hidden]{display:none}
+/* Archive / Resonance switch */
+.mode-switch{position:absolute;left:14px;top:14px;z-index:1000;display:inline-flex;align-items:center;gap:10px;height:40px;padding:0 14px;border-radius:20px;border:1px solid var(--ink);background:rgba(255,255,255,.88);font-size:12px;line-height:1;text-transform:uppercase;letter-spacing:.08em;color:var(--soft);user-select:none}
+.mode-switch button{all:unset;cursor:pointer;color:inherit}
+.mode-switch button:focus-visible{outline:1px solid var(--ink);outline-offset:4px}
+.mode-switch .m-arch{color:var(--ink)}
+.mode-switch .track{position:relative;width:34px;height:18px;border-radius:9px;border:1px solid var(--ink);background:var(--page);transition:background .2s}
+.mode-switch .knob{position:absolute;top:2px;left:2px;width:12px;height:12px;border-radius:50%;background:var(--muted);transition:transform .25s ease,background .2s}
+html[data-mode="resonance"] .mode-switch .m-arch{color:var(--soft)}
+html[data-mode="resonance"] .mode-switch .m-res{color:var(--wine)}
+html[data-mode="resonance"] .mode-switch .knob{transform:translateX(16px);background:var(--wine)}
+.mode-switch.beckon::before,.mode-switch.beckon::after{content:"";position:absolute;inset:-1px;border-radius:21px;border:1px solid var(--wine);opacity:0;pointer-events:none;animation:beckon 4.2s ease-out infinite}
+.mode-switch.beckon::after{animation-delay:.7s}
+@keyframes beckon{0%{opacity:0;transform:scale(1)}8%{opacity:.75}55%{opacity:0;transform:scale(1.35,1.9)}100%{opacity:0;transform:scale(1.35,1.9)}}
+@media (prefers-reduced-motion: reduce){.mode-switch.beckon::before,.mode-switch.beckon::after{animation:none}}
+/* Resonance network and waves */
+.atlas-rays .net line{stroke:rgba(29,30,32,.42);stroke-width:1}
+.atlas-rays .net line.e-sleeping{stroke-dasharray:3 4}
+.atlas-rays .net line.e-fading{stroke-dasharray:1 7;stroke:rgba(156,138,116,.8)}
+.atlas-rays .net line.hub{stroke:rgba(101,28,42,.5);stroke-dasharray:2 6;animation:flow 3s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-16}}
+.atlas-rays .waves circle,.atlas-rays .waves rect{fill:none;stroke-width:1}
+.atlas-rays .waves .w-awakened{stroke:var(--wine)}
+.atlas-rays .waves .w-reborn{stroke:var(--ink)}
+.atlas-rays .waves .w-fading{stroke:var(--fading);stroke-dasharray:1 3}
+@media (prefers-reduced-motion: reduce){.atlas-rays .net line.hub{animation:none}}
 .map-back:hover,.map-back:focus-visible{background:var(--ink);color:var(--page)}
 .leaflet-control-attribution{background:transparent!important;color:var(--soft);font-size:11px}
 .leaflet-control-attribution a{color:var(--soft)}
@@ -804,6 +836,13 @@ h1{font:400 48px/1.3 Roboto,sans-serif;margin:0;letter-spacing:.005em}
 .card h2{font:400 1.85em/1.2 Roboto,sans-serif;margin:.45em 0 .2em}
 .place{color:var(--muted);font-size:.92em}
 .desc{margin:1em 0 0}
+.index{margin:1em 0 0;font-size:.8em;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.index[hidden]{display:none}
+.index .row{display:flex;justify-content:space-between;align-items:baseline;gap:1em}
+.index b{font-weight:400;color:var(--ink);font-size:1.25em;letter-spacing:.02em}
+.index .bar{position:relative;height:3px;background:var(--line);margin-top:.45em}
+.index .bar i{position:absolute;left:0;top:0;bottom:0;background:var(--wine)}
+.index .note{margin-top:.35em;text-transform:none;letter-spacing:0;color:var(--soft);font-size:.95em}
 .facts{display:grid;grid-template-columns:auto 1fr;gap:.25em 1em;margin:1em 0 0;font-size:.87em;line-height:1.45}
 .facts dt{color:var(--soft)}
 .facts dd{margin:0}
@@ -898,6 +937,7 @@ html.embed .cta{margin:14px 0 6px}
       <div class="tag" id="card-tag"></div>
       <h2 id="card-title"></h2>
       <div class="place" id="card-place"></div>
+      <div class="index" id="card-index" hidden></div>
       <p class="desc" id="card-desc"></p>
       <dl class="facts" id="card-facts"></dl>
       <div class="links" id="card-links"></div>
@@ -987,6 +1027,10 @@ html.embed .cta{margin:14px 0 6px}
       author: 'Author', size: 'Size', sources: 'Sources: ', osm: 'on OpenStreetMap',
       loadError: 'The atlas could not load its data. Please try again later.',
       phase1: 'Searching for signals', phase2: 'Calibrating resonance', phase3: 'Synchronising zones',
+      load1: 'Reading the register', load2: 'Checking coordinates', load3: 'Assembling the archive',
+      archive: 'Archive', resonance: 'Resonance', modeAria: 'Map layer', modeTitle: 'Switch between the archive and the resonance network',
+      index: 'Gromozekness index', indexNote: 'measured against GRMZK-1 = 100', origin: 'Origin', originUnknown: 'not established',
+      objects: ['object', 'objects'],
       sleeping: 'Sleeping', awakened: 'Awakened', reborn: 'Reborn', fading: 'Fading',
       lead: 'A metal object from the industrial past that lives on as a being of its own. Tell us what it is and where it stands.',
       what: 'What is it?', whatPh: 'An old boiler painted as a whale',
@@ -1011,6 +1055,10 @@ html.embed .cta{margin:14px 0 6px}
       author: 'Autors', size: 'Izmērs', sources: 'Avoti: ', osm: 'OpenStreetMap kartē',
       loadError: 'Atlantam neizdevās ielādēt datus. Lūdzu, mēģiniet vēlāk.',
       phase1: 'Signālu meklēšana', phase2: 'Rezonanses kalibrēšana', phase3: 'Zonu sinhronizācija',
+      load1: 'Reģistra lasīšana', load2: 'Koordinātu pārbaude', load3: 'Arhīva apkopošana',
+      archive: 'Arhīvs', resonance: 'Rezonanse', modeAria: 'Kartes slānis', modeTitle: 'Pārslēgties starp arhīvu un rezonanses tīklu',
+      index: 'Gromozekības indekss', indexNote: 'attiecībā pret GRMZK-1 = 100', origin: 'Izcelsme', originUnknown: 'nav noteikta',
+      objects: ['objekts', 'objekti'],
       sleeping: 'Guļošs', awakened: 'Pamodies', reborn: 'Atdzimis', fading: 'Izgaistošs',
       lead: 'Metāla objekts no industriālās pagātnes, kas dzīvo tālāk kā patstāvīga būtne. Pastāstiet, kas tas ir un kur tas atrodas.',
       what: 'Kas tas ir?', whatPh: 'Vecs katls, apgleznots kā valis',
@@ -1035,6 +1083,10 @@ html.embed .cta{margin:14px 0 6px}
       author: 'Автор', size: 'Размер', sources: 'Источники: ', osm: 'на OpenStreetMap',
       loadError: 'Атлас не смог загрузить данные. Попробуйте позже.',
       phase1: 'Поиск сигналов', phase2: 'Калибровка резонанса', phase3: 'Синхронизация зон',
+      load1: 'Чтение реестра', load2: 'Сверка координат', load3: 'Сборка архива',
+      archive: 'Архив', resonance: 'Резонанс', modeAria: 'Слой карты', modeTitle: 'Переключиться между архивом и сетью резонанса',
+      index: 'Индекс громозечности', indexNote: 'относительно GRMZK-1 = 100', origin: 'Происхождение', originUnknown: 'не установлено',
+      objects: ['объект', 'объекта', 'объектов'],
       sleeping: 'Спящий', awakened: 'Пробуждённый', reborn: 'Переродившийся', fading: 'Угасающий',
       lead: 'Металлический объект из индустриального прошлого, который живёт дальше как самостоятельное существо. Расскажите, что это и где он стоит.',
       what: 'Что это?', whatPh: 'Старый котёл, раскрашенный под кита',
@@ -1148,6 +1200,58 @@ html.embed .cta{margin:14px 0 6px}
     while (backStack.length && backStack[backStack.length - 1].zoom >= z - 1e-6) backStack.pop();
     syncBack();
   });
+  // ---- Archive / Resonance ----
+  // Archive (default) shows the objects as they are; Resonance shows the GRMZK network:
+  // states, links between nodes, lines to GRMZK-1 and waves. Turning it on runs a short calibration.
+  var MODE = document.documentElement.getAttribute('data-mode') === 'resonance' ? 'resonance' : 'archive';
+  var HUB = 'GRMZK-1';
+  var SEEN_KEY = 'grmzk-resonance-seen';
+  var modeEl = document.createElement('div');
+  modeEl.className = 'mode-switch';
+  modeEl.setAttribute('role', 'group');
+  modeEl.setAttribute('aria-label', t('modeAria'));
+  modeEl.title = t('modeTitle');
+  modeEl.innerHTML = '<button type="button" class="m-arch">' + esc(t('archive')) + '</button>' +
+    '<button type="button" class="track" role="switch" aria-label="' + attr(t('resonance')) + '"><span class="knob"></span></button>' +
+    '<button type="button" class="m-res">' + esc(t('resonance')) + '</button>';
+  map.getContainer().appendChild(modeEl);
+  L.DomEvent.disableClickPropagation(modeEl);
+  L.DomEvent.disableScrollPropagation(modeEl);
+  var trackBtn = modeEl.querySelector('.track');
+  function syncSwitch(){ trackBtn.setAttribute('aria-checked', MODE === 'resonance' ? 'true' : 'false'); }
+  syncSwitch();
+  var seen = false;
+  try { seen = localStorage.getItem(SEEN_KEY) === '1'; } catch (e) {}
+  if (!seen && MODE === 'archive') modeEl.classList.add('beckon');
+  var switching = false;
+  function setMode(m){
+    if (m === MODE || switching) return;
+    modeEl.classList.remove('beckon');
+    try { localStorage.setItem(SEEN_KEY, '1'); } catch (e) {}
+    if (m === 'resonance') {
+      switching = true;
+      var c = startCalibration({phases: 'phase', min: 1500, tau: 900, onDone: function(){ applyMode('resonance'); switching = false; }});
+      c.finish();
+    } else applyMode('archive');
+  }
+  function applyMode(m){
+    MODE = m;
+    document.documentElement.setAttribute('data-mode', m);
+    syncSwitch();
+    if (m === 'archive') visible = {sleeping:true, awakened:true, reborn:true, fading:true};
+    buildLegend();
+    layout();
+    if (current && !card.hidden) openCard(current);
+    try {
+      var q = location.search.replace(/^\?/, '').split('&').filter(function(x){ return x && !/^mode=/.test(x); });
+      if (m === 'resonance') q.push('mode=resonance');
+      history.replaceState(null, '', location.pathname + (q.length ? '?' + q.join('&') : '') + location.hash);
+    } catch (e) {}
+  }
+  modeEl.querySelector('.m-arch').addEventListener('click', function(){ setMode('archive'); });
+  modeEl.querySelector('.m-res').addEventListener('click', function(){ setMode('resonance'); });
+  trackBtn.addEventListener('click', function(){ setMode(MODE === 'resonance' ? 'archive' : 'resonance'); });
+
   map.attributionControl.setPrefix('<a href="https://leafletjs.com" target="_blank" rel="noopener">Leaflet</a>');
   map.attributionControl.addAttribution('Land: <a href="https://www.naturalearthdata.com" target="_blank" rel="noopener">Natural Earth</a>');
   map.on('click', function(){ map.scrollWheelZoom.enable(); });
@@ -1228,6 +1332,8 @@ html.embed .cta{margin:14px 0 6px}
       g.items.push(o); g.pts.push(p); g.sx += p.x; g.sy += p.y;
       g.x = g.sx / g.items.length; g.y = g.sy / g.items.length;
     });
+
+    if (MODE === 'resonance') drawNetwork(shown, groups);
 
     // a group shows the ground it covers: a light disc over all its objects, a small dot for each
     groups.forEach(function(g){
@@ -1313,7 +1419,7 @@ html.embed .cta{margin:14px 0 6px}
       } else {
         var o = g.items[0];
         el.className = 'anchor';
-        el.innerHTML = '<span class="dot s-' + o.status + '"></span>';
+        el.innerHTML = '<span class="dot s-' + (MODE === 'resonance' ? o.status : 'archive') + '"></span>';
         el.addEventListener('click', function(){ openCard(o); });
       }
       el.style.left = '0'; el.style.top = '0';
@@ -1344,6 +1450,108 @@ html.embed .cta{margin:14px 0 6px}
       el.addEventListener('mouseleave', function(){ b.line.removeAttribute('class'); label.hidden = true; });
       holder.appendChild(el);
     });
+  }
+
+  // ---- resonance network ----
+  // Edges: every node to its two nearest neighbours (a mesh, dense where nodes are dense),
+  // plus a thin line from every node to GRMZK-1, where the theory began.
+  var edges = null;
+  function km(a, b){
+    var r = Math.PI / 180, dLat = (b.lat - a.lat) * r, dLng = (b.lng - a.lng) * r;
+    var h = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(a.lat * r) * Math.cos(b.lat * r) * Math.sin(dLng / 2) * Math.sin(dLng / 2);
+    return 12742 * Math.asin(Math.min(1, Math.sqrt(h)));
+  }
+  function buildEdges(){
+    var seenPair = {}, list = [];
+    objects.forEach(function(o){
+      objects.filter(function(x){ return x !== o; })
+        .map(function(x){ return {x: x, d: km(o, x)}; })
+        .sort(function(a, b){ return a.d - b.d; })
+        .slice(0, 2)
+        .forEach(function(n){
+          var k = [o.code, n.x.code].sort().join('|');
+          if (seenPair[k]) return;
+          seenPair[k] = true;
+          list.push({a: o, b: n.x, hub: false});
+        });
+    });
+    var hub = objects.filter(function(o){ return o.code === HUB; })[0];
+    if (hub) objects.forEach(function(o){
+      if (o === hub) return;
+      var k = [o.code, hub.code].sort().join('|');
+      if (!seenPair[k]) list.push({a: o, b: hub, hub: true});
+    });
+    return list;
+  }
+  var RANK = {awakened: 3, reborn: 2, fading: 1, sleeping: 0};
+  function drawNetwork(shown, groups){
+    if (!edges) edges = buildEdges();
+    var on = {};
+    shown.forEach(function(o){ on[o.code] = true; });
+    var net = document.createElementNS(SVGNS, 'g');
+    net.setAttribute('class', 'net');
+    edges.forEach(function(e){
+      if (!on[e.a.code] || !on[e.b.code]) return;
+      var p = map.latLngToLayerPoint([e.a.lat, e.a.lng]), q = map.latLngToLayerPoint([e.b.lat, e.b.lng]);
+      if (Math.hypot(p.x - q.x, p.y - q.y) < 4) return;
+      var line = document.createElementNS(SVGNS, 'line');
+      line.setAttribute('x1', p.x); line.setAttribute('y1', p.y);
+      line.setAttribute('x2', q.x); line.setAttribute('y2', q.y);
+      var cls = e.hub ? 'hub' : (e.a.status === 'fading' || e.b.status === 'fading') ? 'e-fading'
+        : (e.a.status === 'sleeping' || e.b.status === 'sleeping') ? 'e-sleeping' : '';
+      if (cls) line.setAttribute('class', cls);
+      net.appendChild(line);
+    });
+    rays.appendChild(net);
+    // waves come from each mark: the most active state in a group decides its wave
+    var reduce = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+    var waves = document.createElementNS(SVGNS, 'g');
+    waves.setAttribute('class', 'waves');
+    groups.forEach(function(g){
+      var st = g.items.reduce(function(best, o){ return RANK[o.status] > RANK[best] ? o.status : best; }, 'sleeping');
+      if (st === 'sleeping') return;
+      var r0 = g.items.length > 1 ? 14 : 7, r1 = r0 + (st === 'fading' ? 16 : 26);
+      var dur = st === 'fading' ? 6 : st === 'reborn' ? 3.6 : 3;
+      var count = st === 'fading' ? 1 : 2;
+      for (var i = 0; i < count; i++) {
+        var w;
+        if (st === 'reborn') {
+          // reborn nodes send out square waves, like their diamond mark
+          w = document.createElementNS(SVGNS, 'rect');
+          w.setAttribute('transform', 'rotate(45 ' + g.x + ' ' + g.y + ')');
+          wave(w, ['x', g.x, -r0, -r1], ['y', g.y, -r0, -r1], ['width', 0, 2 * r0, 2 * r1], ['height', 0, 2 * r0, 2 * r1]);
+        } else {
+          w = document.createElementNS(SVGNS, 'circle');
+          w.setAttribute('cx', g.x); w.setAttribute('cy', g.y);
+          wave(w, ['r', 0, r0, r1]);
+        }
+        w.setAttribute('class', 'w-' + st);
+        waves.appendChild(w);
+        if (reduce) { w.setAttribute('opacity', st === 'fading' ? '.25' : '.35'); continue; }
+        var op = document.createElementNS(SVGNS, 'animate');
+        op.setAttribute('attributeName', 'opacity');
+        op.setAttribute('values', (st === 'fading' ? '.45' : '.75') + ';0');
+        op.setAttribute('dur', dur + 's');
+        op.setAttribute('begin', (i * dur / count) + 's');
+        op.setAttribute('repeatCount', 'indefinite');
+        w.appendChild(op);
+      }
+      function wave(el){
+        // each spec: [attribute, base, from, to] — animated from base+from to base+to
+        [].slice.call(arguments, 1).forEach(function(s){
+          el.setAttribute(s[0], s[1] + s[3]);
+          if (reduce) return;
+          var a = document.createElementNS(SVGNS, 'animate');
+          a.setAttribute('attributeName', s[0]);
+          a.setAttribute('values', (s[1] + s[2]) + ';' + (s[1] + s[3]));
+          a.setAttribute('dur', dur + 's');
+          a.setAttribute('begin', (i * dur / count) + 's');
+          a.setAttribute('repeatCount', 'indefinite');
+          el.appendChild(a);
+        });
+      }
+    });
+    rays.appendChild(waves);
   }
 
   // Moves previews whose ray crosses another ray, runs through another preview or mark,
@@ -1452,7 +1660,7 @@ html.embed .cta{margin:14px 0 6px}
     return Promise.resolve(window.EMBEDDED_DATA);
   }
 
-  var calib = startCalibration();
+  var calib = startCalibration({phases: MODE === 'resonance' ? 'phase' : 'load'});
   load().then(function(list){
     list.forEach(function(o){ if (o.status === 'reference') o.status = 'awakened'; });
     objects = list.filter(function(o){ return o.onMap !== false && STATUS[o.status] && isFinite(o.lat) && isFinite(o.lng) && o.lat !== null; });
@@ -1471,7 +1679,8 @@ html.embed .cta{margin:14px 0 6px}
 
   // Opening ritual: a calibration dial over the map. The percentage is staged, not measured:
   // it rises quickly, slows down, and closes to 100% once the data is in, after at least MIN ms.
-  function startCalibration(){
+  function startCalibration(opts){
+    opts = opts || {};
     var mapEl = document.getElementById('map');
     var NS = 'http://www.w3.org/2000/svg';
     var el = document.createElement('div');
@@ -1490,9 +1699,9 @@ html.embed .cta{margin:14px 0 6px}
     var C = 2 * Math.PI * 58;
     arc.style.strokeDasharray = C; arc.style.strokeDashoffset = C;
     var reduce = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
-    var MIN = 2200, FIN = 650, PERIOD = 2600;
+    var MIN = opts.min || 2200, FIN = 650, PERIOD = 2600, TAU = opts.tau || 2300, KEY = opts.phases || 'load';
     var t0 = performance.now(), readyAt = null, finAt = null, finFrom = 0, phase = -1, stopped = false;
-    function staged(ms){ return 95 * (1 - Math.exp(-ms / 2300)); }
+    function staged(ms){ return 95 * (1 - Math.exp(-ms / TAU)); }
     function frame(now){
       if (stopped) return;
       var ms = now - t0, p;
@@ -1502,7 +1711,7 @@ html.embed .cta{margin:14px 0 6px}
       num.nodeValue = String(Math.floor(p));
       arc.style.strokeDashoffset = C * (1 - p / 100);
       var ph = p < 34 ? 1 : p < 67 ? 2 : 3;
-      if (ph !== phase) { phase = ph; phaseEl.textContent = t('phase' + ph); }
+      if (ph !== phase) { phase = ph; phaseEl.textContent = t(KEY + ph); }
       if (!reduce) {
         var box = el.getBoundingClientRect(), cb = core.getBoundingClientRect();
         var cx = cb.left - box.left + cb.width / 2, cy = cb.top - box.top + cb.height / 2;
@@ -1521,6 +1730,7 @@ html.embed .cta{margin:14px 0 6px}
       stopped = true;
       num.nodeValue = '100';
       mapEl.removeAttribute('aria-busy');
+      if (opts.onDone) opts.onDone();
       el.classList.add('done');
       setTimeout(function(){ el.remove(); }, 500);
     }
@@ -1531,9 +1741,22 @@ html.embed .cta{margin:14px 0 6px}
     };
   }
 
+  function plural(n){
+    var f = t('objects');
+    if (LANG === 'ru') { var a = n % 10, b = n % 100; return f[(a === 1 && b !== 11) ? 0 : (a >= 2 && a <= 4 && (b < 12 || b > 14)) ? 1 : 2]; }
+    if (LANG === 'lv') return f[(n % 10 === 1 && n % 100 !== 11) ? 0 : 1];
+    return f[n === 1 ? 0 : 1];
+  }
   function buildLegend(){
     var ul = document.getElementById('legend');
     ul.innerHTML = '';
+    if (MODE === 'archive') {
+      // the archive has no states: one quiet line with the size of the register
+      var li0 = document.createElement('li');
+      li0.innerHTML = '<span class="static"><span class="dot s-archive"></span>' + objects.length + ' ' + esc(plural(objects.length)) + '</span>';
+      ul.appendChild(li0);
+      return;
+    }
     ORDER.forEach(function(s){
       var n = objects.filter(function(o){ return o.status === s; }).length;
       var li = document.createElement('li');
@@ -1580,12 +1803,23 @@ html.embed .cta{margin:14px 0 6px}
     lastFocus = document.activeElement;
     current = o;
     showPhoto(0);
-    document.getElementById('card-tag').innerHTML = '<span class="dot s-'+o.status+'"></span>'+esc(o.code)+' · '+STATUS[o.status].label;
+    var res = MODE === 'resonance';
+    document.getElementById('card-tag').innerHTML = res
+      ? '<span class="dot s-'+o.status+'"></span>'+esc(o.code)+' · '+STATUS[o.status].label
+      : '<span class="dot s-archive"></span>'+esc(o.code);
+    var idx = document.getElementById('card-index');
+    if (res && o.index != null) {
+      idx.innerHTML = '<div class="row"><span>'+esc(t('index'))+'</span><b>'+o.index+'</b></div>' +
+        '<div class="bar"><i style="width:'+o.index+'%"></i></div><div class="note">'+esc(t('indexNote'))+'</div>';
+      idx.hidden = false;
+    } else idx.hidden = true;
     document.getElementById('card-title').textContent = o.name;
     document.getElementById('card-place').textContent = [o.place, o.where].filter(Boolean).join(' · ');
-    document.getElementById('card-desc').textContent = o.description || '';
+    document.getElementById('card-desc').textContent = (res && o.resonance) || o.description || '';
     var facts = '';
-    if (o.author) facts += '<dt>'+esc(t('author'))+'</dt><dd>'+esc(o.author)+'</dd>';
+    // in Resonance the origin of GRMZK-1 is still not established; the archive names its author
+    if (res && o.code === HUB) facts += '<dt>'+esc(t('origin'))+'</dt><dd>'+esc(t('originUnknown'))+'</dd>';
+    else if (o.author) facts += '<dt>'+esc(t('author'))+'</dt><dd>'+esc(o.author)+'</dd>';
     if (o.size) facts += '<dt>'+esc(t('size'))+'</dt><dd>'+esc(o.size)+'</dd>';
     document.getElementById('card-facts').innerHTML = facts;
     var links = '';
