@@ -746,16 +746,12 @@ html[data-mode="resonance"] .mode-switch .knob{transform:translateX(16px);backgr
 @keyframes beckon{0%{opacity:0;transform:scale(1)}8%{opacity:.75}55%{opacity:0;transform:scale(1.35,1.9)}100%{opacity:0;transform:scale(1.35,1.9)}}
 @media (prefers-reduced-motion: reduce){.mode-switch.beckon::before,.mode-switch.beckon::after{animation:none}}
 /* Resonance network and waves */
-.atlas-rays .net line{stroke:rgba(29,30,32,.42);stroke-width:1}
-.atlas-rays .net line.e-sleeping{stroke-dasharray:3 4}
-.atlas-rays .net line.e-fading{stroke-dasharray:1 7;stroke:rgba(156,138,116,.8)}
-.atlas-rays .net line.hub{stroke:rgba(101,28,42,.5);stroke-dasharray:2 6;animation:flow 3s linear infinite}
-@keyframes flow{to{stroke-dashoffset:-16}}
+.atlas-rays .net line{stroke:rgba(29,30,32,.45);stroke-width:1;stroke-dasharray:3 5}
+.atlas-rays .net line.quiet{stroke:rgba(29,30,32,.25)}
 .atlas-rays .waves circle,.atlas-rays .waves rect{fill:none;stroke-width:1}
 .atlas-rays .waves .w-awakened{stroke:var(--wine)}
-.atlas-rays .waves .w-reborn{stroke:var(--ink)}
+.atlas-rays .waves .w-reborn{stroke:var(--muted)}
 .atlas-rays .waves .w-fading{stroke:var(--fading);stroke-dasharray:1 3}
-@media (prefers-reduced-motion: reduce){.atlas-rays .net line.hub{animation:none}}
 .map-back:hover,.map-back:focus-visible{background:var(--ink);color:var(--page)}
 .leaflet-control-attribution{background:transparent!important;color:var(--soft);font-size:11px}
 .leaflet-control-attribution a{color:var(--soft)}
@@ -1453,54 +1449,34 @@ html.embed .cta{margin:14px 0 6px}
   }
 
   // ---- resonance network ----
-  // Edges: every node to its two nearest neighbours (a mesh, dense where nodes are dense),
-  // plus a thin line from every node to GRMZK-1, where the theory began.
-  var edges = null;
-  function km(a, b){
-    var r = Math.PI / 180, dLat = (b.lat - a.lat) * r, dLng = (b.lng - a.lng) * r;
-    var h = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(a.lat * r) * Math.cos(b.lat * r) * Math.sin(dLng / 2) * Math.sin(dLng / 2);
-    return 12742 * Math.asin(Math.min(1, Math.sqrt(h)));
+  // Dashed links only between nearby groups at the current zoom: each mark to its two nearest
+  // neighbours on screen, if they are close enough. Distant nodes stay unconnected, so the map
+  // does not fill with long lines.
+  var LINK_PX = 190;
+  var RANK = {awakened: 3, reborn: 2, fading: 1, sleeping: 0};
+  function groupState(g){
+    return g.items.reduce(function(best, o){ return RANK[o.status] > RANK[best] ? o.status : best; }, 'sleeping');
   }
-  function buildEdges(){
-    var seenPair = {}, list = [];
-    objects.forEach(function(o){
-      objects.filter(function(x){ return x !== o; })
-        .map(function(x){ return {x: x, d: km(o, x)}; })
+  function drawNetwork(shown, groups){
+    var net = document.createElementNS(SVGNS, 'g');
+    net.setAttribute('class', 'net');
+    var done = {};
+    groups.forEach(function(g, i){
+      groups.map(function(h, j){ return {j: j, h: h, d: Math.hypot(h.x - g.x, h.y - g.y)}; })
+        .filter(function(n){ return n.j !== i && n.d < LINK_PX; })
         .sort(function(a, b){ return a.d - b.d; })
         .slice(0, 2)
         .forEach(function(n){
-          var k = [o.code, n.x.code].sort().join('|');
-          if (seenPair[k]) return;
-          seenPair[k] = true;
-          list.push({a: o, b: n.x, hub: false});
+          var k = Math.min(i, n.j) + '|' + Math.max(i, n.j);
+          if (done[k]) return;
+          done[k] = true;
+          var line = document.createElementNS(SVGNS, 'line');
+          line.setAttribute('x1', g.x); line.setAttribute('y1', g.y);
+          line.setAttribute('x2', n.h.x); line.setAttribute('y2', n.h.y);
+          var a = groupState(g), b = groupState(n.h);
+          if (a === 'sleeping' || b === 'sleeping' || a === 'fading' || b === 'fading') line.setAttribute('class', 'quiet');
+          net.appendChild(line);
         });
-    });
-    var hub = objects.filter(function(o){ return o.code === HUB; })[0];
-    if (hub) objects.forEach(function(o){
-      if (o === hub) return;
-      var k = [o.code, hub.code].sort().join('|');
-      if (!seenPair[k]) list.push({a: o, b: hub, hub: true});
-    });
-    return list;
-  }
-  var RANK = {awakened: 3, reborn: 2, fading: 1, sleeping: 0};
-  function drawNetwork(shown, groups){
-    if (!edges) edges = buildEdges();
-    var on = {};
-    shown.forEach(function(o){ on[o.code] = true; });
-    var net = document.createElementNS(SVGNS, 'g');
-    net.setAttribute('class', 'net');
-    edges.forEach(function(e){
-      if (!on[e.a.code] || !on[e.b.code]) return;
-      var p = map.latLngToLayerPoint([e.a.lat, e.a.lng]), q = map.latLngToLayerPoint([e.b.lat, e.b.lng]);
-      if (Math.hypot(p.x - q.x, p.y - q.y) < 4) return;
-      var line = document.createElementNS(SVGNS, 'line');
-      line.setAttribute('x1', p.x); line.setAttribute('y1', p.y);
-      line.setAttribute('x2', q.x); line.setAttribute('y2', q.y);
-      var cls = e.hub ? 'hub' : (e.a.status === 'fading' || e.b.status === 'fading') ? 'e-fading'
-        : (e.a.status === 'sleeping' || e.b.status === 'sleeping') ? 'e-sleeping' : '';
-      if (cls) line.setAttribute('class', cls);
-      net.appendChild(line);
     });
     rays.appendChild(net);
     // waves come from each mark: the most active state in a group decides its wave
@@ -1508,10 +1484,10 @@ html.embed .cta{margin:14px 0 6px}
     var waves = document.createElementNS(SVGNS, 'g');
     waves.setAttribute('class', 'waves');
     groups.forEach(function(g){
-      var st = g.items.reduce(function(best, o){ return RANK[o.status] > RANK[best] ? o.status : best; }, 'sleeping');
+      var st = groupState(g);
       if (st === 'sleeping') return;
       var r0 = g.items.length > 1 ? 14 : 7, r1 = r0 + (st === 'fading' ? 16 : 26);
-      var dur = st === 'fading' ? 6 : st === 'reborn' ? 3.6 : 3;
+      var dur = st === 'fading' ? 12 : st === 'reborn' ? 8 : 7;
       var count = st === 'fading' ? 1 : 2;
       for (var i = 0; i < count; i++) {
         var w;
@@ -1519,7 +1495,8 @@ html.embed .cta{margin:14px 0 6px}
           // reborn nodes send out square waves, like their diamond mark
           w = document.createElementNS(SVGNS, 'rect');
           w.setAttribute('transform', 'rotate(45 ' + g.x + ' ' + g.y + ')');
-          wave(w, ['x', g.x, -r0, -r1], ['y', g.y, -r0, -r1], ['width', 0, 2 * r0, 2 * r1], ['height', 0, 2 * r0, 2 * r1]);
+          var q0 = r0 * 0.75, q1 = r1 * 0.75;   // a square reaches further along its diagonal
+          wave(w, ['x', g.x, -q0, -q1], ['y', g.y, -q0, -q1], ['width', 0, 2 * q0, 2 * q1], ['height', 0, 2 * q0, 2 * q1]);
         } else {
           w = document.createElementNS(SVGNS, 'circle');
           w.setAttribute('cx', g.x); w.setAttribute('cy', g.y);
@@ -1530,7 +1507,7 @@ html.embed .cta{margin:14px 0 6px}
         if (reduce) { w.setAttribute('opacity', st === 'fading' ? '.25' : '.35'); continue; }
         var op = document.createElementNS(SVGNS, 'animate');
         op.setAttribute('attributeName', 'opacity');
-        op.setAttribute('values', (st === 'fading' ? '.45' : '.75') + ';0');
+        op.setAttribute('values', (st === 'awakened' ? '.75' : '.45') + ';0');
         op.setAttribute('dur', dur + 's');
         op.setAttribute('begin', (i * dur / count) + 's');
         op.setAttribute('repeatCount', 'indefinite');
