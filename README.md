@@ -43,6 +43,15 @@ The switch in the row above the map (left of the legend, with the language circl
 one dashed thread through every awakened object (links taken shortest first, at most two per object, no closed loops,
 no distance limit, so it crosses oceans; computed once on real distances and drawn between the marks of the current zoom) and slow waves (awakened: round, 7 s; reborn: square, 8 s; fading: one faint dotted wave, 12 s; sleeping: none).
 The card then shows the researchers' text from `Resonance (EN)`, `Resonance (RU)`, `Resonance (LV)`.
-An empty Resonance cell falls back to English, then to the archive text. (The `Grmzk index` column is no longer shown on the site.)
+An empty Resonance cell falls back to English, then to the archive text.
+
+## Sheet layout (Atlas tab)
+
+English first, then the translations, each block in the same order:
+
+`Code · Name · Status · On map · Place · Location · Latitude · Longitude · Author · Size · Description · Resonance (EN) · Photo credits · Sources`,
+then `Name (RU) … Description (RU) · Resonance (RU)`, then the same for `(LV)`. The script finds columns by their header, so columns can be
+moved freely; an empty translated cell falls back to English. Photos come only from the Drive folder (files named `grmzk-N` + letter);
+the old `Photo links`, `Photo refs` and `Grmzk index` columns were removed on 2026-11-27 (a full copy of the sheet before the cleanup is in Drive).
 `?mode=resonance` opens the map straight in Resonance. Until the first switch, a wave runs from the switch every few seconds;
 the browser remembers the first switch (`localStorage`).
