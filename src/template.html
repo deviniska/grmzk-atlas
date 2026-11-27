@@ -175,13 +175,6 @@ html[data-mode="resonance"] .mode-switch .knob{transform:translateX(14px);backgr
 .card h2{font:400 1.85em/1.2 Roboto,sans-serif;margin:.45em 0 .2em}
 .place{color:var(--muted);font-size:.92em}
 .desc{margin:1em 0 0}
-.index{margin:1em 0 0;font-size:.8em;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
-.index[hidden]{display:none}
-.index .row{display:flex;justify-content:space-between;align-items:baseline;gap:1em}
-.index b{font-weight:400;color:var(--ink);font-size:1.25em;letter-spacing:.02em}
-.index .bar{position:relative;height:3px;background:var(--line);margin-top:.45em}
-.index .bar i{position:absolute;left:0;top:0;bottom:0;background:var(--wine)}
-.index .note{margin-top:.35em;text-transform:none;letter-spacing:0;color:var(--soft);font-size:.95em}
 .facts{display:grid;grid-template-columns:auto 1fr;gap:.25em 1em;margin:1em 0 0;font-size:.87em;line-height:1.45}
 .facts dt{color:var(--soft)}
 .facts dd{margin:0}
@@ -281,7 +274,6 @@ html.embed .cta{margin:14px 0 6px}
       <div class="tag" id="card-tag"></div>
       <h2 id="card-title"></h2>
       <div class="place" id="card-place"></div>
-      <div class="index" id="card-index" hidden></div>
       <p class="desc" id="card-desc"></p>
       <dl class="facts" id="card-facts"></dl>
       <div class="links" id="card-links"></div>
@@ -357,7 +349,7 @@ html.embed .cta{margin:14px 0 6px}
       phase1: 'Searching for signals', phase2: 'Calibrating resonance', phase3: 'Synchronising zones',
       load1: 'Reading the register', load2: 'Checking coordinates', load3: 'Assembling the archive',
       archive: 'Archive', resonance: 'Resonance', modeAria: 'Map layer', modeTitle: 'Switch between the archive and the resonance network',
-      index: 'Gromozekness index', indexNote: 'measured against GRMZK-1 = 100', origin: 'Origin', originUnknown: 'not established',
+      origin: 'Origin', originUnknown: 'not established',
       objects: ['object', 'objects'],
       sleeping: 'Sleeping', awakened: 'Awakened', reborn: 'Reborn', fading: 'Fading',
       lead: 'A metal object from the industrial past that lives on as a being of its own. Tell us what it is and where it stands.',
@@ -385,7 +377,7 @@ html.embed .cta{margin:14px 0 6px}
       phase1: 'Signālu meklēšana', phase2: 'Rezonanses kalibrēšana', phase3: 'Zonu sinhronizācija',
       load1: 'Reģistra lasīšana', load2: 'Koordinātu pārbaude', load3: 'Arhīva apkopošana',
       archive: 'Arhīvs', resonance: 'Rezonanse', modeAria: 'Kartes slānis', modeTitle: 'Pārslēgties starp arhīvu un rezonanses tīklu',
-      index: 'Gromozekības indekss', indexNote: 'attiecībā pret GRMZK-1 = 100', origin: 'Izcelsme', originUnknown: 'nav noteikta',
+      origin: 'Izcelsme', originUnknown: 'nav noteikta',
       objects: ['objekts', 'objekti'],
       sleeping: 'Guļošs', awakened: 'Pamodies', reborn: 'Atdzimis', fading: 'Izgaistošs',
       lead: 'Metāla objekts no industriālās pagātnes, kas dzīvo tālāk kā patstāvīga būtne. Pastāstiet, kas tas ir un kur tas atrodas.',
@@ -413,7 +405,7 @@ html.embed .cta{margin:14px 0 6px}
       phase1: 'Поиск сигналов', phase2: 'Калибровка резонанса', phase3: 'Синхронизация зон',
       load1: 'Чтение реестра', load2: 'Сверка координат', load3: 'Сборка архива',
       archive: 'Архив', resonance: 'Резонанс', modeAria: 'Слой карты', modeTitle: 'Переключиться между архивом и сетью резонанса',
-      index: 'Индекс громозечности', indexNote: 'относительно GRMZK-1 = 100', origin: 'Происхождение', originUnknown: 'не установлено',
+      origin: 'Происхождение', originUnknown: 'не установлено',
       objects: ['объект', 'объекта', 'объектов'],
       sleeping: 'Спящий', awakened: 'Пробуждённый', reborn: 'Переродившийся', fading: 'Угасающий',
       lead: 'Металлический объект из индустриального прошлого, который живёт дальше как самостоятельное существо. Расскажите, что это и где он стоит.',
@@ -1114,12 +1106,6 @@ html.embed .cta{margin:14px 0 6px}
     document.getElementById('card-tag').innerHTML = res
       ? '<span class="dot s-'+o.status+'"></span>'+esc(o.code)+' · '+STATUS[o.status].label
       : '<span class="dot s-archive"></span>'+esc(o.code);
-    var idx = document.getElementById('card-index');
-    if (res && o.index != null) {
-      idx.innerHTML = '<div class="row"><span>'+esc(t('index'))+'</span><b>'+o.index+'</b></div>' +
-        '<div class="bar"><i style="width:'+o.index+'%"></i></div><div class="note">'+esc(t('indexNote'))+'</div>';
-      idx.hidden = false;
-    } else idx.hidden = true;
     document.getElementById('card-title').textContent = o.name;
     document.getElementById('card-place').textContent = [o.place, o.where].filter(Boolean).join(' · ');
     document.getElementById('card-desc').textContent = (res && o.resonance) || o.description || '';
