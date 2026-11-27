@@ -39,7 +39,7 @@ On deviniska.com each language has its own page with the same embed code plus `&
 ## Archive and Resonance
 
 The map opens in **Archive**: neutral marks, the factual description (`Description`, `Description (RU)`, `Description (LV)`), author and size.
-The switch in the top-left corner of the map turns on **Resonance** after a short calibration: states and their legend,
+The switch in the row above the map (left of the legend, with the language circle on the right) turns on **Resonance** after a short calibration: states and their legend,
 dashed links between nearby marks only (each mark to its two nearest neighbours on screen, if closer than 190 px,
 so the links change with the zoom) and slow waves (awakened: round, 7 s; reborn: square, 8 s; fading: one faint dotted wave, 12 s; sleeping: none).
 The card then shows the researchers' text from `Resonance (EN)`, `Resonance (RU)`, `Resonance (LV)` and the
