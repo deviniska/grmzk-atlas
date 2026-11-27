@@ -40,8 +40,8 @@ On deviniska.com each language has its own page with the same embed code plus `&
 
 The map opens in **Archive**: neutral marks, the factual description (`Description`, `Description (RU)`, `Description (LV)`), author and size.
 The switch in the row above the map (left of the legend, with the language circle on the right) turns on **Resonance** after a short calibration: states and their legend,
-dashed links between nearby marks only (each mark to its two nearest neighbours on screen, if closer than 190 px,
-so the links change with the zoom) and slow waves (awakened: round, 7 s; reborn: square, 8 s; fading: one faint dotted wave, 12 s; sleeping: none).
+one dashed thread through every awakened object (links taken shortest first, at most two per object, no closed loops,
+no distance limit, so it crosses oceans; computed once on real distances and drawn between the marks of the current zoom) and slow waves (awakened: round, 7 s; reborn: square, 8 s; fading: one faint dotted wave, 12 s; sleeping: none).
 The card then shows the researchers' text from `Resonance (EN)`, `Resonance (RU)`, `Resonance (LV)`.
 An empty Resonance cell falls back to English, then to the archive text. (The `Grmzk index` column is no longer shown on the site.)
 `?mode=resonance` opens the map straight in Resonance. Until the first switch, a wave runs from the switch every few seconds;

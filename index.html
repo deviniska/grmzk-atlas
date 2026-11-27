@@ -751,7 +751,6 @@ html[data-mode="resonance"] .mode-switch .knob{transform:translateX(14px);backgr
 @media (prefers-reduced-motion: reduce){.mode-switch.beckon::before,.mode-switch.beckon::after{animation:none}}
 /* Resonance network and waves */
 .atlas-rays .net line{stroke:rgba(29,30,32,.45);stroke-width:1;stroke-dasharray:3 5}
-.atlas-rays .net line.quiet{stroke:rgba(29,30,32,.25)}
 .atlas-rays .waves circle,.atlas-rays .waves rect{fill:none;stroke-width:1}
 .atlas-rays .waves .w-awakened{stroke:var(--wine)}
 .atlas-rays .waves .w-reborn{stroke:var(--muted)}
@@ -1448,34 +1447,63 @@ html.embed .cta{margin:14px 0 6px}
   }
 
   // ---- resonance network ----
-  // Dashed links only between nearby groups at the current zoom: each mark to its two nearest
-  // neighbours on screen, if they are close enough. Distant nodes stay unconnected, so the map
-  // does not fill with long lines.
-  var LINK_PX = 190;
+  // Only awakened nodes are linked. Links are taken shortest first; a link is kept if both ends
+  // still have fewer than two links and it does not close a loop. With no distance limit this
+  // always ends as one unbroken thread through every awakened node, across oceans too.
+  // The thread is computed once, on real distances, so it does not change with the zoom.
   var RANK = {awakened: 3, reborn: 2, fading: 1, sleeping: 0};
   function groupState(g){
     return g.items.reduce(function(best, o){ return RANK[o.status] > RANK[best] ? o.status : best; }, 'sleeping');
   }
+  function km(a, b){
+    var r = Math.PI / 180, dLat = (b.lat - a.lat) * r, dLng = (b.lng - a.lng) * r;
+    var h = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(a.lat * r) * Math.cos(b.lat * r) * Math.sin(dLng / 2) * Math.sin(dLng / 2);
+    return 12742 * Math.asin(Math.min(1, Math.sqrt(h)));
+  }
+  var thread = null;
+  function buildThread(){
+    var nodes = objects.filter(function(o){ return o.status === 'awakened'; });
+    var pairs = [];
+    nodes.forEach(function(a, i){ nodes.slice(i + 1).forEach(function(b){ pairs.push({a: a, b: b, d: km(a, b)}); }); });
+    pairs.sort(function(x, y){ return x.d - y.d; });
+    var deg = {}, root = {};
+    nodes.forEach(function(o){ deg[o.code] = 0; root[o.code] = o.code; });
+    function find(c){ while (root[c] !== c) c = root[c] = root[root[c]]; return c; }
+    var links = [];
+    pairs.forEach(function(p){
+      if (links.length >= nodes.length - 1) return;
+      if (deg[p.a.code] >= 2 || deg[p.b.code] >= 2) return;
+      var ra = find(p.a.code), rb = find(p.b.code);
+      if (ra === rb) return;            // would close a loop
+      root[ra] = rb; deg[p.a.code]++; deg[p.b.code]++;
+      links.push(p);
+    });
+    return links;
+  }
   function drawNetwork(shown, groups){
+    if (!thread) thread = buildThread();
+    var groupOf = {};
+    groups.forEach(function(g){ g.items.forEach(function(o){ groupOf[o.code] = g; }); });
+    var worldPx = map.latLngToLayerPoint([0, 180]).x - map.latLngToLayerPoint([0, -180]).x;
     var net = document.createElementNS(SVGNS, 'g');
     net.setAttribute('class', 'net');
-    var done = {};
-    groups.forEach(function(g, i){
-      groups.map(function(h, j){ return {j: j, h: h, d: Math.hypot(h.x - g.x, h.y - g.y)}; })
-        .filter(function(n){ return n.j !== i && n.d < LINK_PX; })
-        .sort(function(a, b){ return a.d - b.d; })
-        .slice(0, 2)
-        .forEach(function(n){
-          var k = Math.min(i, n.j) + '|' + Math.max(i, n.j);
-          if (done[k]) return;
-          done[k] = true;
-          var line = document.createElementNS(SVGNS, 'line');
-          line.setAttribute('x1', g.x); line.setAttribute('y1', g.y);
-          line.setAttribute('x2', n.h.x); line.setAttribute('y2', n.h.y);
-          var a = groupState(g), b = groupState(n.h);
-          if (a === 'sleeping' || b === 'sleeping' || a === 'fading' || b === 'fading') line.setAttribute('class', 'quiet');
-          net.appendChild(line);
-        });
+    var done = [];
+    function seg(x1, y1, x2, y2){
+      var line = document.createElementNS(SVGNS, 'line');
+      line.setAttribute('x1', x1); line.setAttribute('y1', y1);
+      line.setAttribute('x2', x2); line.setAttribute('y2', y2);
+      net.appendChild(line);
+    }
+    thread.forEach(function(l){
+      var ga = groupOf[l.a.code], gb = groupOf[l.b.code];
+      if (!ga || !gb || ga === gb || done.indexOf(ga.x + ',' + ga.y + '|' + gb.x + ',' + gb.y) >= 0) return;
+      done.push(ga.x + ',' + ga.y + '|' + gb.x + ',' + gb.y);
+      var dLng = l.b.lng - l.a.lng;
+      if (Math.abs(dLng) <= 180) { seg(ga.x, ga.y, gb.x, gb.y); return; }
+      // the short way crosses the date line: draw it leaving one edge of the map and entering the other
+      var shift = dLng > 0 ? -worldPx : worldPx;
+      seg(ga.x, ga.y, gb.x + shift, gb.y);
+      seg(ga.x - shift, ga.y, gb.x, gb.y);
     });
     rays.appendChild(net);
     // waves come from each mark: the most active state in a group decides its wave
